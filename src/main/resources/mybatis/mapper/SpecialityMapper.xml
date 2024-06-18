@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mw.education.dao.SpecialityMapper">
+  <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.Speciality">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="grade" jdbcType="DATE" property="grade" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="college_id" jdbcType="INTEGER" property="collegeId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <resultMap id="ExtendResultMap2" type="com.mw.education.domain.joined_entity.SpecialityAndCollege">
+    <id column="id" jdbcType="INTEGER" property="speciality.id" />
+    <result column="name" jdbcType="VARCHAR" property="speciality.name" />
+    <result column="grade" jdbcType="DATE" property="speciality.grade" />
+    <result column="code" jdbcType="VARCHAR" property="speciality.code" />
+    <result column="college_id" jdbcType="INTEGER" property="speciality.collegeId" />
+    <result column="remark" jdbcType="VARCHAR" property="speciality.remark" />
+    <result column="college_name" jdbcType="VARCHAR" property="college.name" />
+    <result column="college_remark" jdbcType="VARCHAR" property="college.remark" />
+    <result column="college_id" jdbcType="INTEGER" property="college.id" />
+  </resultMap>
+
+
+  <select id="selectByPrimaryKeyJoinedCollege" parameterType="java.lang.Integer" resultMap="ExtendResultMap2">
+    SELECT s.id AS speciality_id, s.name AS speciality_name, s.grade, s.code AS speciality_code, s.college_id, s.remark,
+           c.id AS college_id, c.name AS college_name, c.remark AS college_remark
+    FROM speciality s INNER JOIN college c ON s.college_id = c.id
+    WHERE s.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAllJoinedCollege" resultMap="ExtendResultMap2">
+    SELECT s.id AS speciality_id, s.name AS speciality_name, s.grade, s.code AS speciality_code, s.college_id, s.remark,
+           c.id AS college_id, c.name AS college_name, c.remark AS college_remark
+    FROM speciality s JOIN college c ON s.college_id = c.id
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from speciality
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mw.education.domain.compose.Speciality">
+    insert into speciality (id, name, grade, 
+      code, college_id, remark
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{grade,jdbcType=DATE}, 
+      #{code,jdbcType=VARCHAR}, #{collegeId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.Speciality">
+    update speciality
+    set name = #{name,jdbcType=VARCHAR},
+      grade = #{grade,jdbcType=DATE},
+      code = #{code,jdbcType=VARCHAR},
+      college_id = #{collegeId,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'false' as QUERYID,id, name, grade, code, college_id, remark
+    from speciality
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, grade, code, college_id, remark
+    from speciality
+  </select>
+</mapper>
