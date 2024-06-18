@@ -31,4 +31,7 @@
     select id, class_id, course_id
     from class_course
   </select>
+
+  <select id="selectClassCourseWithCourseDetails" resultMap="BaseResultMap">
+    </select>
 </mapper>

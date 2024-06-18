@@ -14,4 +14,6 @@ public interface ClassCourseMapper {
     List<ClassCourse> selectAll();
 
     int updateByPrimaryKey(ClassCourse row);
+
+    List<ClassCourse> selectClassCourseWithCourseDetails();
 }

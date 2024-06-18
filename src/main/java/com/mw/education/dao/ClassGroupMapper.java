@@ -14,4 +14,6 @@ public interface ClassGroupMapper {
     List<ClassGroup> selectAll();
 
     int updateByPrimaryKey(ClassGroup row);
+
+    
 }

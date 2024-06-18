@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mw.education.dao.StudentMapper">
+  <resultMap id="StudentAndClassResultMap" type="com.mw.education.domain.joined_entity.StudentAndClass">
+    <id column="id" property="student.id" />
+    <result column="name" property="student.name" />
+    <result column="password" property="student.password" />
+    <result column="code" property="student.code" />
+    <result column="class_id" property="student.classId" />
+    <result column="remark" property="student.remark" />
+
+    <result column="class_name" property="classGroup.name" />
+    <result column="class_code" property="classGroup.code" />
+    <result column="speciality_id" property="classGroup.specialityId" />
+  </resultMap>
+
   <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.Student">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -10,22 +23,12 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
 
-  <resultMap id="StudentWithClassResultMap" type="com.mw.education.domain.compose.compose.StudentWithClass">
-    <id column="id" property="student.id" />
-    <result column="name" property="student.name" />
-    <result column="password" property="student.password" />
-    <result column="code" property="student.code" />
-    <result column="class_id" property="student.classId" />
-    <result column="remark" property="student.remark" />
 
-    <result column="class_name" property="class.name" />
-    <result column="class_code" property="class.code" />
-    <result column="speciality_id" property="class.specialityId" />
-  </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from student
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" parameterType="com.mw.education.domain.compose.Student">
     insert into student (id, name, password, 
       code, class_id, remark
@@ -34,6 +37,7 @@
       #{code,jdbcType=VARCHAR}, #{classId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
       )
   </insert>
+
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.Student">
     update student
     set name = #{name,jdbcType=VARCHAR},
@@ -43,13 +47,29 @@
       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'false' as QUERYID,id, name, password, code, class_id, remark
     from student
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <select id="selectAll" resultMap="BaseResultMap">
     select id, name, password, code, class_id, remark
     from student
   </select>
+
+  <select id="selectAllJoinedCollege" resultMap="StudentAndClassResultMap">
+    select s.id, s.name, s.password, s.code, s.class_id, s.remark, c.name as class_name, c.code as class_code, c.speciality_id
+    from student s
+    inner join class c on s.class_id = c.id
+  </select>
+
+  <select id="selectByPrimaryKeyJoinedCollege" parameterType="java.lang.Integer"  resultMap="StudentAndClassResultMap">
+    select s.id, s.name, s.password, s.code, s.class_id, s.remark, c.name as class_name, c.code as class_code, c.speciality_id
+    from student s
+    inner join class c on s.class_id = c.id
+    where s.id = #{id,jdbcType=INTEGER}
+ </select>
+
 </mapper>
