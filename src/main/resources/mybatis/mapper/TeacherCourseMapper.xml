@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mw.education.dao.TeacherCourseMapper">
+
+  <resultMap id="TeacherCourseAndCourseResultMap" type="com.mw.education.domain.joined_entity.TeacherCourseAndCourse">
+    <association property="teacherAndCollege" columnPrefix="teacher_" javaType="com.mw.education.domain.joined_entity.TeacherAndCollege">
+      <id column="id" property="teacher.id"/>
+      <result column="name" property="teacher.name"/>
+      <result column="password" property="teacher.password"/>
+      <result column="code" property="teacher.code"/>
+      <result column="college_id" property="teacher.collegeId"/>
+      <result column="remark" property="teacher.remark"/>
+      <association property="college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="remark" property="remark"/>
+      </association>
+    </association>
+    <association property="course" columnPrefix="course_" javaType="com.mw.education.domain.compose.Course">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="code" property="code"/>
+      <result column="term_id" property="termId"/>
+      <result column="credit" property="credit"/>
+    </association>
+  </resultMap>
+
   <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.TeacherCourse">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
@@ -30,5 +54,29 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select id, teacher_id, course_id
     from teacher_course
+  </select>
+  <select id="selectAllJoinedCourse" resultMap="TeacherCourseAndCourseResultMap">
+    SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
+           t.code AS "teacher_code", t.college_id, t.remark AS "teacher_remark",
+           c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
+           co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
+           co.term_id AS "course_term_id", co.credit AS "course_credit"
+    FROM teacher_course tc
+           JOIN teacher t ON t.id = tc.teacher_id
+           JOIN college c ON t.college_id = c.id
+           JOIN course co ON co.id = tc.course_id
+  </select>
+
+  <select id="selectByPrimaryKeyJoinedCourse" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
+    SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
+           t.code AS "teacher_code", t.college_id, t.remark AS "teacher_remark",
+           c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
+           co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
+           co.term_id AS "course_term_id", co.credit AS "course_credit"
+    FROM teacher_course tc
+      JOIN teacher t ON t.id = tc.teacher_id
+      JOIN college c ON t.college_id = c.id
+      JOIN course co ON co.id = tc.course_id
+    WHERE tc.id = #{id,jdbcType=INTEGER}
   </select>
 </mapper>

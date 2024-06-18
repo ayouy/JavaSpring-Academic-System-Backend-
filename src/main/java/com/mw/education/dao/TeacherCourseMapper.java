@@ -1,6 +1,7 @@
 package com.mw.education.dao;
 
 import com.mw.education.domain.compose.TeacherCourse;
+import com.mw.education.domain.joined_entity.TeacherCourseAndCourse;
 
 import java.util.List;
 
@@ -14,4 +15,8 @@ public interface TeacherCourseMapper {
     List<TeacherCourse> selectAll();
 
     int updateByPrimaryKey(TeacherCourse row);
+
+    List<TeacherCourseAndCourse> selectAllJoinedCourse();
+
+    TeacherCourseAndCourse selectByPrimaryKeyJoinedCourse(Integer id);
 }

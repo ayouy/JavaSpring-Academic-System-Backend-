@@ -17,7 +17,7 @@ public interface SpecialityMapper {
 
     int updateByPrimaryKey(Speciality row);
 
-    SpecialityAndCollege selectByPrimaryKeyJoinedCollege(@Param("id") Integer id);
+    SpecialityAndCollege selectByPrimaryKeyJoinedCollege(Integer id);
 
     List<SpecialityAndCollege> selectAllJoinedCollege();
 
