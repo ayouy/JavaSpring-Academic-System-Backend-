@@ -28,7 +28,7 @@ public class TeacherController {
          * PageInfo包含了非常全面的分页属性
          */
         PageHelper.startPage(pageNum, pageSize);
-        List list = teacherMapper.selectAllJoinedCollege();
+        List list = teacherMapper.getAllTeacherAndCollege();
 
         AjaxResult result = AjaxResult.success().rows(list.size(), list);
         return result;
@@ -37,7 +37,7 @@ public class TeacherController {
     // http://127.0.0.1:8080/teachers/1
     @GetMapping("/teachers/{id}")
     public AjaxResult selectById(@PathVariable int id) {
-        TeacherAndCollege item = teacherMapper.selectByPrimaryKeyJoinedCollege(id);
+        TeacherAndCollege item = teacherMapper.getTeacherAndCollegeByTeacherId(id);
         List list = new ArrayList<>();
         list.add(item);
 

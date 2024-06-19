@@ -2,39 +2,50 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mw.education.dao.CourseMapper">
   <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.Course">
-    <!--@mbg.generated-->
-    <!--@Table course-->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="term_id" jdbcType="INTEGER" property="termId" />
     <result column="credit" jdbcType="DECIMAL" property="credit" />
+    <result column="college_id" jdbcType="INTEGER" property="collegeId" />
   </resultMap>
+
+  <resultMap id="CourseAndTermResultMap" type="com.mw.education.domain.joined_entity.CourseAndTerm">
+    <association property="course" columnPrefix="course_" javaType="com.mw.education.domain.compose.Course">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="code" jdbcType="VARCHAR" property="code" />
+      <result column="credit" jdbcType="DECIMAL" property="credit" />
+      <result column="college_id" jdbcType="INTEGER" property="collegeId" />
+    </association>
+    <association property="term"  columnPrefix="term_" javaType="com.mw.education.domain.compose.Term">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="start_date" jdbcType="DATE" property="startDate" />
+      <result column="end_date" jdbcType="DATE" property="endDate" />
+    </association>
+  </resultMap>
+
   <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    id, `name`, code, term_id, credit
+    id, `name`, code, term_id, credit, college_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
     select 
     <include refid="Base_Column_List" />
     from course
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    <!--@mbg.generated-->
     delete from course
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Course" useGeneratedKeys="true">
-    <!--@mbg.generated-->
     insert into course (`name`, code, term_id, 
-      credit)
+      credit, college_id)
     values (#{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{termId,jdbcType=INTEGER}, 
-      #{credit,jdbcType=DECIMAL})
+      #{credit,jdbcType=DECIMAL}, #{collegeId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Course" useGeneratedKeys="true">
-    <!--@mbg.generated-->
     insert into course
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -48,6 +59,9 @@
       </if>
       <if test="credit != null">
         credit,
+      </if>
+      <if test="collegeId != null">
+        college_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -63,10 +77,12 @@
       <if test="credit != null">
         #{credit,jdbcType=DECIMAL},
       </if>
+      <if test="collegeId != null">
+        #{collegeId,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.Course">
-    <!--@mbg.generated-->
     update course
     <set>
       <if test="name != null">
@@ -81,50 +97,45 @@
       <if test="credit != null">
         credit = #{credit,jdbcType=DECIMAL},
       </if>
+      <if test="collegeId != null">
+        college_id = #{collegeId,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.Course">
-    <!--@mbg.generated-->
     update course
     set `name` = #{name,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
       term_id = #{termId,jdbcType=INTEGER},
-      credit = #{credit,jdbcType=DECIMAL}
+      credit = #{credit,jdbcType=DECIMAL},
+      college_id = #{collegeId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.Course">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
-    <result column="term_id" jdbcType="INTEGER" property="termId" />
-    <result column="credit" jdbcType="DECIMAL" property="credit" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from course
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.mw.education.domain.compose.Course">
-    insert into course (id, name, code, 
-      term_id, credit)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
-      #{termId,jdbcType=INTEGER}, #{credit,jdbcType=DECIMAL})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.Course">
-    update course
-    set name = #{name,jdbcType=VARCHAR},
-      code = #{code,jdbcType=VARCHAR},
-      term_id = #{termId,jdbcType=INTEGER},
-      credit = #{credit,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 'false' as QUERYID,id, name, code, term_id, credit
-    from course
-    where id = #{id,jdbcType=INTEGER}
+
+  <sql id="selectCourseAndTermColumns">
+    SELECT c.id AS "course_id", c.name AS "course_name", c.code AS "course_code",
+           c.term_id AS "course_term_id", c.credit AS "course_credit", c.college_id AS "course_college_id",
+           t.id AS "term_id", t.name AS "term_name", t.start_date AS "term_start_date", t.end_date AS "term_end_date"
+    FROM course c
+           JOIN term t ON c.term_id = t.id
+  </sql>
+
+  <select id="getAllCourseAndTerm" resultMap="CourseAndTermResultMap">
+    <include refid="selectCourseAndTermColumns"/>
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, name, code, term_id, credit
-    from course
+
+  <select id="getCourseAndTermByCourseId" parameterType="java.lang.Integer" resultMap="CourseAndTermResultMap">
+    <include refid="selectCourseAndTermColumns"/>
+    WHERE c.id = #{id,jdbcType=INTEGER}
   </select>
+<select id="getAllClassCourseAndCourse" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
+    <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
+</select>
+
+  <select id="getClassCourseAndCourseByCourseId" parameterType="java.lang.Integer" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
+    <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
+    WHERE cc.course_id = #{id,jdbcType=INTEGER}
+  </select>
+
 </mapper>

@@ -2,6 +2,7 @@ package com.mw.education.dao;
 
 import com.mw.education.domain.compose.ClassGroup;
 import com.mw.education.domain.joined_entity.ClassAndSpeciality;
+import com.mw.education.domain.joined_entity.ClassCourseAndCourse;
 
 import java.util.List;
 
@@ -19,5 +20,9 @@ public interface ClassGroupMapper {
     List<ClassAndSpeciality> getAllClassAndSpeciality();
 
     ClassAndSpeciality getClassAndSpecialityById(Integer id);
+
+    List<ClassCourseAndCourse> getAllClassCourseAndCourse();
+
+    ClassCourseAndCourse getClassCourseAndCourseByClassId(Integer id);
     
 }

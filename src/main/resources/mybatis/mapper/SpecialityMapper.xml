@@ -10,30 +10,37 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
 
-  <resultMap id="ExtendResultMap2" type="com.mw.education.domain.joined_entity.SpecialityAndCollege">
-    <id column="id" jdbcType="INTEGER" property="speciality.id" />
-    <result column="name" jdbcType="VARCHAR" property="speciality.name" />
-    <result column="grade" jdbcType="DATE" property="speciality.grade" />
-    <result column="code" jdbcType="VARCHAR" property="speciality.code" />
-    <result column="college_id" jdbcType="INTEGER" property="speciality.collegeId" />
-    <result column="remark" jdbcType="VARCHAR" property="speciality.remark" />
-    <result column="college_name" jdbcType="VARCHAR" property="college.name" />
-    <result column="college_remark" jdbcType="VARCHAR" property="college.remark" />
-    <result column="college_id" jdbcType="INTEGER" property="college.id" />
+  <resultMap id="SpecialityAndCollegeResultMap" type="com.mw.education.domain.joined_entity.SpecialityAndCollege">
+    <association property="speciality" columnPrefix="speciality_" javaType="com.mw.education.domain.compose.Speciality">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="name" property="name" jdbcType="VARCHAR"/>
+      <result column="grade" property="grade" jdbcType="VARCHAR"/>
+      <result column="code" property="code" jdbcType="VARCHAR"/>
+      <result column="college_id" property="collegeId" jdbcType="INTEGER"/>
+      <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </association>
+    <association property="college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
+      <result column="id" property="id" jdbcType="INTEGER"/>
+      <result column="name" property="name" jdbcType="VARCHAR"/>
+      <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </association>
   </resultMap>
 
+  <sql id="selectSpecialityAndCollegeColumns">
+    SELECT s.id AS "speciality_id", s.name AS "speciality_name", s.grade AS "speciality_grade", s.code AS "speciality_code",
+           s.college_id AS "speciality_college_id",  s.remark AS "speciality_remark",
+           c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark"
+    FROM speciality s
+           JOIN college c ON s.college_id = c.id
+  </sql>
 
-  <select id="selectByPrimaryKeyJoinedCollege" parameterType="java.lang.Integer" resultMap="ExtendResultMap2">
-    SELECT s.id AS speciality_id, s.name AS speciality_name, s.grade, s.code AS speciality_code, s.college_id, s.remark,
-           c.id AS college_id, c.name AS college_name, c.remark AS college_remark
-    FROM speciality s INNER JOIN college c ON s.college_id = c.id
-    WHERE s.id = #{id,jdbcType=INTEGER}
+  <select id="getAllSpecialityAndCollege" resultMap="SpecialityAndCollegeResultMap">
+    <include refid="selectSpecialityAndCollegeColumns"/>
   </select>
 
-  <select id="selectAllJoinedCollege" resultMap="ExtendResultMap2">
-    SELECT s.id AS speciality_id, s.name AS speciality_name, s.grade, s.code AS speciality_code, s.college_id, s.remark,
-           c.id AS college_id, c.name AS college_name, c.remark AS college_remark
-    FROM speciality s JOIN college c ON s.college_id = c.id
+  <select id="getSpecialityAndCollegeBySpecialityId" parameterType="java.lang.Integer" resultMap="SpecialityAndCollegeResultMap">
+    <include refid="selectSpecialityAndCollegeColumns"/>
+    WHERE s.id = #{id,jdbcType=INTEGER}
   </select>
 
 

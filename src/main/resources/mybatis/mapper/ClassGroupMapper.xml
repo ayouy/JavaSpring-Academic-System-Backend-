@@ -72,4 +72,13 @@
     where c.id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="getAllClassCourseAndCourse" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
+    <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
+  </select>
+
+  <select id="getClassCourseAndCourseByClassId" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
+    <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
+    where cc.class_id = #{classId,jdbcType=INTEGER}
+  </select>
+
 </mapper>

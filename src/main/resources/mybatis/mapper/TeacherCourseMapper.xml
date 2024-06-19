@@ -3,7 +3,7 @@
 <mapper namespace="com.mw.education.dao.TeacherCourseMapper">
 
   <resultMap id="TeacherCourseAndCourseResultMap" type="com.mw.education.domain.joined_entity.TeacherCourseAndCourse">
-    <association property="teacherAndCollege" columnPrefix="teacher_" javaType="com.mw.education.domain.joined_entity.TeacherAndCollege">
+    <association property="teacherAndCollege.teacher" columnPrefix="teacher_" javaType="com.mw.education.domain.joined_entity.TeacherAndCollege">
       <id column="id" property="teacher.id"/>
       <result column="name" property="teacher.name"/>
       <result column="password" property="teacher.password"/>
@@ -11,7 +11,7 @@
       <result column="code" property="teacher.code"/>
       <result column="remark" property="teacher.remark"/>
     </association>
-    <association property="teacherAndCollege" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
+    <association property="teacherAndCollege.college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
       <id column="id" property="id"/>
       <result column="name" property="name"/>
       <result column="remark" property="remark"/>
@@ -55,7 +55,7 @@
     select id, teacher_id, course_id
     from teacher_course
   </select>
-  <select id="selectAllJoinedCourse" resultMap="TeacherCourseAndCourseResultMap">
+  <select id="getAllTeacherCourseAndCourse" resultMap="TeacherCourseAndCourseResultMap">
     SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
            t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
            c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
@@ -67,7 +67,7 @@
            JOIN course co ON co.id = tc.course_id
   </select>
 
-  <select id="selectByPrimaryKeyJoinedCourse" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
+  <select id="getTeacherCourseAndCourseByTeacherCourseId" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
     SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
            t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
            c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",

@@ -6,10 +6,12 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="college_id" jdbcType="INTEGER" property="collegeId" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
+
   <sql id="Base_Column_List">
-    id, `name`, `password`, code, remark
+    id, `name`, `password`, code, college_id, remark
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,9 +25,9 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Dean" useGeneratedKeys="true">
     insert into dean (`name`, `password`, code, 
-      remark)
+      college_id, remark)
     values (#{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR})
+      #{collegeId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Dean" useGeneratedKeys="true">
     insert into dean
@@ -38,6 +40,9 @@
       </if>
       <if test="code != null">
         code,
+      </if>
+      <if test="collegeId != null">
+        college_id,
       </if>
       <if test="remark != null">
         remark,
@@ -52,6 +57,9 @@
       </if>
       <if test="code != null">
         #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeId != null">
+        #{collegeId,jdbcType=INTEGER},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -70,6 +78,9 @@
       <if test="code != null">
         code = #{code,jdbcType=VARCHAR},
       </if>
+      <if test="collegeId != null">
+        college_id = #{collegeId,jdbcType=INTEGER},
+      </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
@@ -81,8 +92,18 @@
     set `name` = #{name,jdbcType=VARCHAR},
       `password` = #{password,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
+      college_id = #{collegeId,jdbcType=INTEGER},
       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getAllCollegeAndDean" resultMap="com.mw.education.dao.CollegeMapper.CollegeAndDeanResultMap" >
+    <include refid="com.mw.education.dao.CollegeMapper.selectCollegeAndDean"/>
+  </select>
+
+  <select id="getCollegeAndDeanByDeanId"  parameterType="java.lang.Integer" resultMap="com.mw.education.dao.CollegeMapper.CollegeAndDeanResultMap" >
+    <include refid="com.mw.education.dao.CollegeMapper.selectCollegeAndDean"/>
+    WHERE d.id = #{id,jdbcType=INTEGER};
+  </select>
 
 </mapper>

@@ -24,14 +24,14 @@
   </resultMap>
 
 
-  <select id="selectByPrimaryKeyJoinedCollege" parameterType="java.lang.Integer" resultMap="ExtendResultMap1">
+  <select id="getTeacherAndCollegeByTeacherId" parameterType="java.lang.Integer" resultMap="ExtendResultMap1">
     select 'false' as QUERYID, teacher.id,teacher.name,teacher.password,teacher.code,teacher.remark,
            college_id as college_id,college.name as college_name,college.remark as college_remark
     from teacher left join college on teacher.college_id=college.id
     where teacher.id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id ="selectAllJoinedCollege" resultMap="ExtendResultMap1">
+  <select id ="getAllTeacherAndCollege" resultMap="ExtendResultMap1">
     select 'false' as QUERYID, teacher.id,teacher.name,teacher.password,teacher.code,teacher.remark,
            college_id as college_id,college.name as college_name,college.remark as college_remark
     from teacher join college on teacher.college_id=college.id

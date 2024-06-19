@@ -17,8 +17,8 @@ public interface SpecialityMapper {
 
     int updateByPrimaryKey(Speciality row);
 
-    SpecialityAndCollege selectByPrimaryKeyJoinedCollege(Integer id);
+    SpecialityAndCollege getSpecialityAndCollegeBySpecialityId(Integer id);
 
-    List<SpecialityAndCollege> selectAllJoinedCollege();
+    List<SpecialityAndCollege> getAllSpecialityAndCollege();
 
 }

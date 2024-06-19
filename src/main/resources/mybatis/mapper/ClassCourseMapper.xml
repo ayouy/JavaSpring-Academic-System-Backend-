@@ -20,6 +20,12 @@
       <result column="termid" property="termId" jdbcType="INTEGER"/>
       <result column="credit" property="credit" jdbcType="VARCHAR"/>
     </association>
+    <association property="term" columnPrefix="term_" javaType="com.mw.education.domain.compose.Term">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="name" property="name" jdbcType="VARCHAR"/>
+      <result column="startDate" property="startDate" jdbcType="DATE"/>
+      <result column="endDate" property="endDate" jdbcType="DATE"/>
+    </association>
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -76,82 +82,24 @@
       course_id = #{courseId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.ClassCourse">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="class_id" jdbcType="INTEGER" property="classId" />
-    <result column="course_id" jdbcType="INTEGER" property="courseId" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, class_id, course_id
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from class_course
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from class_course
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.ClassCourse" useGeneratedKeys="true">
-    insert into class_course (class_id, course_id)
-    values (#{classId,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.ClassCourse" useGeneratedKeys="true">
-    insert into class_course
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="classId != null">
-        class_id,
-      </if>
-      <if test="courseId != null">
-        course_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="classId != null">
-        #{classId,jdbcType=INTEGER},
-      </if>
-      <if test="courseId != null">
-        #{courseId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.ClassCourse">
 
-    update class_course
-    <set>
-      <if test="classId != null">
-        class_id = #{classId,jdbcType=INTEGER},
-      </if>
-      <if test="courseId != null">
-        course_id = #{courseId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.ClassCourse">
 
-    update class_course
-    set class_id = #{classId,jdbcType=INTEGER},
-      course_id = #{courseId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
-  <select id="selectAllJoinedCourse" resultMap="ClassCourseAndCourseResultMap">
+  <sql id="selectAllJoinedCourseColumns">
     SELECT cc.id AS "classcourse_id", cc.class_id AS "classcourse_class_Id", cc.course_id AS "classcourse_course_Id",
            c.id AS "course_id", c.name AS "course_name", c.code AS "course_code",c.term_id AS "course_termId",
-           c.credit AS "course_credit"
+           c.credit AS "course_credit", c.college_id AS "course_collegeId",
+           t.id AS "term_id", t.name AS "term_name", t.start_date AS "term_startDate", t.end_date AS "term_endDate"
     FROM class_course cc
            JOIN course c ON cc.course_id = c.id
+           JOIN term t ON c.term_id = t.id
+  </sql>
+
+  <select id="getAllClassCoresAndCourse" resultMap="ClassCourseAndCourseResultMap">
+    <include refid="selectAllJoinedCourseColumns" />
   </select>
 
-  <select id="selectByPrimaryKeyJoinedCourse" parameterType="java.lang.Integer" resultMap="ClassCourseAndCourseResultMap">
-    SELECT cc.id AS "classcourse_id", cc.class_id AS "classcourse_class_Id", cc.course_id AS "classcourse_course_Id",
-    c.id AS "course_id", c.name AS "course_name", c.code AS "course_code",c.term_id AS "course_termId",
-    c.credit AS "course_credit"
-    FROM class_course cc
-    JOIN course c ON cc.course_id = c.id
+  <select id="getClassCourseAndCourseByClassCourseId" parameterType="java.lang.Integer" resultMap="ClassCourseAndCourseResultMap">
+    <include refid="selectAllJoinedCourseColumns" />
     WHERE cc.id = #{id,jdbcType=INTEGER}
   </select>
 </mapper>

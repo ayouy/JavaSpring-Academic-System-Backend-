@@ -18,9 +18,9 @@ public interface StudentMapper {
 
     int updateByPrimaryKey(Student row);
 
-    List<StudentAndClass>  selectAllJoinedCollege();
+    List<StudentAndClass> getAllStudentAndClass();
 
-    StudentAndClass selectByPrimaryKeyJoinedCollege(@Param("id") Integer id);
+    StudentAndClass getStudentAndClassByStudentId(@Param("id") Integer id);
 
     @Select("SELECT count(id) from student where code=#{code} and password=#{password}")
     int countByCodeAndPassword(@Param("code")String code,@Param("password") String password);

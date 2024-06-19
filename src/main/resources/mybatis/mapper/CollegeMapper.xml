@@ -6,20 +6,45 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
+
+  <resultMap id="CollegeAndDeanResultMap" type="com.mw.education.domain.joined_entity.CollegeAndDean">
+    <association property="college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="remark" property="remark" jdbcType="VARCHAR" />
+    </association>
+    <association property="dean"  columnPrefix="dean_" javaType="com.mw.education.domain.compose.Dean">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="password" property="password" jdbcType="VARCHAR" />
+      <result column="code" property="code" jdbcType="VARCHAR" />
+      <result column="college_id" property="collegeId" jdbcType="INTEGER"/>
+      <result column="remark" property="remark" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+
+
+  <sql id="selectCollegeAndDean">
+    SELECT c.id as "college_id", c.name as college_name, c.remark as college_remark,
+           d.id as dean_id, d.name as dean_name, d.password as dean_password, d.code as dean_code,
+           d.college_id as dean_college_id, d.remark as dean_remark
+    FROM college c LEFT JOIN dean d ON c.id = d.college_id
+  </sql>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from college
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.mw.education.domain.compose.College">
     insert into college (id, name, remark
-      )
+    )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
-      )
+    )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.College">
     update college
     set name = #{name,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR}
+    remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -31,4 +56,24 @@
     select id, name, remark
     from college
   </select>
+
+  <select id="getAllCollegeAndDean" resultMap="CollegeAndDeanResultMap">
+    <include refid="selectCollegeAndDean"/>
+  </select>
+
+  <select id="getCollegeAndDeanByCollegeId" parameterType="java.lang.Integer" resultMap="CollegeAndDeanResultMap">
+    <include refid="selectCollegeAndDean"/>
+    WHERE c.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getAllSpecialityAndCollege" resultMap="com.mw.education.dao.SpecialityMapper.SpecialityAndCollegeResultMap">
+    <include refid="com.mw.education.dao.SpecialityMapper.selectSpecialityAndCollegeColumns"/>
+  </select>
+
+  <select id="getSpecialityAndCollegeById" parameterType="java.lang.Integer" resultMap="com.mw.education.dao.SpecialityMapper.SpecialityAndCollegeResultMap">
+    <include refid="com.mw.education.dao.SpecialityMapper.selectSpecialityAndCollegeColumns"/>
+    WHERE s.college_id = #{id,jdbcType=INTEGER}
+  </select>
+
+
 </mapper>

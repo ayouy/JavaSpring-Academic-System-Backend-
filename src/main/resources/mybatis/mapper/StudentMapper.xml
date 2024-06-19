@@ -59,13 +59,13 @@
     from student
   </select>
 
-  <select id="selectAllJoinedCollege" resultMap="StudentAndClassResultMap">
+  <select id="getAllStudentAndClass" resultMap="StudentAndClassResultMap">
     select s.id, s.name, s.password, s.code, s.class_id, s.remark, c.name as class_name, c.code as class_code, c.speciality_id
     from student s
     inner join class c on s.class_id = c.id
   </select>
 
-  <select id="selectByPrimaryKeyJoinedCollege" parameterType="java.lang.Integer"  resultMap="StudentAndClassResultMap">
+  <select id="getStudentAndClassByStudentId" parameterType="java.lang.Integer" resultMap="StudentAndClassResultMap">
     select s.id, s.name, s.password, s.code, s.class_id, s.remark, c.name as class_name, c.code as class_code, c.speciality_id
     from student s
     inner join class c on s.class_id = c.id

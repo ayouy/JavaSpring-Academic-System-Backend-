@@ -20,6 +20,6 @@ public interface ClassCourseMapper {
 
     List<ClassCourse> selectAll();
 
-    List<ClassCourseAndCourse> selectAllJoinedCourse();
-    ClassCourseAndCourse selectByPrimaryKeyJoinedCourse(Integer id);
+    List<ClassCourseAndCourse> getAllClassCoresAndCourse();
+    ClassCourseAndCourse getClassCourseAndCourseByClassCourseId(Integer id);
 }

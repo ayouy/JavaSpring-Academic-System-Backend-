@@ -74,16 +74,5 @@
       end_date = #{endDate,jdbcType=DATE}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.Term">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="start_date" jdbcType="DATE" property="startDate" />
-    <result column="end_date" jdbcType="DATE" property="endDate" />
-  </resultMap>
-  <insert id="insert" parameterType="com.mw.education.domain.compose.Term">
-    insert into term (id, name, start_date, 
-      end_date)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{startDate,jdbcType=DATE}, 
-      #{endDate,jdbcType=DATE})
-  </insert>
+
 </mapper>

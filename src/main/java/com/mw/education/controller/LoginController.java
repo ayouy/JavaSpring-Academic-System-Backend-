@@ -15,13 +15,6 @@ public class LoginController {
     @Autowired
     private TeacherMapper teacherMapper;
 
-    /*
-    @Autowired
-    private StudentMapper studentMapper;
-
-    @Autowired
-    private DeanMapper deanMapper;
-     */
 
     public static class LoginData {
         private String code;

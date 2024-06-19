@@ -1,6 +1,7 @@
 package com.mw.education.dao;
 
 import com.mw.education.domain.compose.Dean;
+import com.mw.education.domain.joined_entity.CollegeAndDean;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -20,6 +21,10 @@ public interface DeanMapper {
     int updateByPrimaryKey(Dean record);
 
     List<Dean> selectAll();
+
+    List<CollegeAndDean> getAllCollegeAndDean();
+
+    CollegeAndDean getCollegeAndDeanByDeanId(Integer id);
 
     @Select("SELECT count(id) from dean where code=#{code} and password=#{password}")
     int countByCodeAndPassword(@Param("code") String code, @Param("password") String password);

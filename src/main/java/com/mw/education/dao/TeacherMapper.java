@@ -18,9 +18,9 @@ public interface TeacherMapper {
 
     int updateByPrimaryKey(Teacher row);
 
-    TeacherAndCollege selectByPrimaryKeyJoinedCollege(Integer id);
+    TeacherAndCollege getTeacherAndCollegeByTeacherId(Integer id);
 
-    List<TeacherAndCollege> selectAllJoinedCollege();
+    List<TeacherAndCollege> getAllTeacherAndCollege();
 
     @Select("select count(id) from teacher where code =#{code} and password =#{password}")
     int countByCodeAndPassword(@Param("code")String code, @Param("password" ) String password);

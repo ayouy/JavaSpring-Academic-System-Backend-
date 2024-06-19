@@ -16,7 +16,7 @@ public interface TeacherCourseMapper {
 
     int updateByPrimaryKey(TeacherCourse row);
 
-    List<TeacherCourseAndCourse> selectAllJoinedCourse();
+    List<TeacherCourseAndCourse> getAllTeacherCourseAndCourse();
 
-    TeacherCourseAndCourse selectByPrimaryKeyJoinedCourse(Integer id);
+    TeacherCourseAndCourse getTeacherCourseAndCourseByTeacherCourseId(Integer id);
 }

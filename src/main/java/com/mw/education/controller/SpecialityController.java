@@ -16,13 +16,13 @@ public class SpecialityController {
     public AjaxResult selectAllJoinedCollege(@RequestParam(name = "pageSize", defaultValue = "10" ) int pageSize,
                                              @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, pageSize);
-        List<SpecialityAndCollege> list = specialityMapper.selectAllJoinedCollege();
+        List<SpecialityAndCollege> list = specialityMapper.getAllSpecialityAndCollege();
         return AjaxResult.success().rows(list.size(), list);
     }
 
     @GetMapping("/specialities/{id}")
     public AjaxResult selectByIdJoinedCollege(@PathVariable int id) {
-        SpecialityAndCollege item = specialityMapper.selectByPrimaryKeyJoinedCollege(id);
+        SpecialityAndCollege item = specialityMapper.getSpecialityAndCollegeBySpecialityId(id);
         return AjaxResult.success().data(item);
     }
 
