@@ -7,11 +7,15 @@ import java.util.List;
 public interface CourseMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(Course row);
+    int insert(Course record);
+
+    int insertSelective(Course record);
 
     Course selectByPrimaryKey(Integer id);
 
-    List<Course> selectAll();
+    int updateByPrimaryKeySelective(Course record);
 
-    int updateByPrimaryKey(Course row);
+    int updateByPrimaryKey(Course record);
+
+    List<Course> selectAll();
 }

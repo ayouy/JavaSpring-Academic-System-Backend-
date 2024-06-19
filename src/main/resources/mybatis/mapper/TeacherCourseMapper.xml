@@ -7,14 +7,14 @@
       <id column="id" property="teacher.id"/>
       <result column="name" property="teacher.name"/>
       <result column="password" property="teacher.password"/>
-      <result column="code" property="teacher.code"/>
       <result column="college_id" property="teacher.collegeId"/>
+      <result column="code" property="teacher.code"/>
       <result column="remark" property="teacher.remark"/>
-      <association property="college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="remark" property="remark"/>
-      </association>
+    </association>
+    <association property="teacherAndCollege" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="remark" property="remark"/>
     </association>
     <association property="course" columnPrefix="course_" javaType="com.mw.education.domain.compose.Course">
       <id column="id" property="id"/>
@@ -57,7 +57,7 @@
   </select>
   <select id="selectAllJoinedCourse" resultMap="TeacherCourseAndCourseResultMap">
     SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
-           t.code AS "teacher_code", t.college_id, t.remark AS "teacher_remark",
+           t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
            c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
            co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
            co.term_id AS "course_term_id", co.credit AS "course_credit"
@@ -69,7 +69,7 @@
 
   <select id="selectByPrimaryKeyJoinedCourse" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
     SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
-           t.code AS "teacher_code", t.college_id, t.remark AS "teacher_remark",
+           t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
            c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
            co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
            co.term_id AS "course_term_id", co.credit AS "course_credit"

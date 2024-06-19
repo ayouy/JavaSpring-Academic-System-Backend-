@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
-public class Speciality implements Serializable {
+public class  Speciality implements Serializable {
     private Integer id;
 
     private String name;

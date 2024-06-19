@@ -12,13 +12,7 @@
     <result column="college_name" jdbcType="VARCHAR" property="college.name" />
     <result column="college_remark" jdbcType="VARCHAR" property="college.remark" />
     <result column="college_id" jdbcType="INTEGER" property="college.id" />
-    <!--    <association property="college" javaType="com.mw.education.domain.College">-->
-    <!--      <id column="college_id" jdbcType="INTEGER" property="id" />-->
-    <!--      <result column="name" jdbcType="VARCHAR" property="name" />-->
-    <!--      <result column="remark" jdbcType="VARCHAR" property="remark" />-->
-    <!--    </association>-->
   </resultMap>
-
 
   <resultMap id="TeacherResultMap" type="com.mw.education.domain.compose.Teacher">
     <id column="id" jdbcType="INTEGER" property="id" />
@@ -74,5 +68,4 @@
     select id, name, password, code, college_id, remark
     from teacher
   </select>
-
 </mapper>

@@ -8,36 +8,81 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
-
-
+  <sql id="Base_Column_List">
+    id, `name`, `password`, code, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from dean
+    where id = #{id,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from dean
     where id = #{id,jdbcType=INTEGER}
   </delete>
-
-  <insert id="insert" parameterType="com.mw.education.domain.compose.Dean">
-    insert into dean (id, name, password, 
-      code, remark)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{code,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Dean" useGeneratedKeys="true">
+    insert into dean (`name`, `password`, code, 
+      remark)
+    values (#{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
   </insert>
-
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Dean" useGeneratedKeys="true">
+    insert into dean
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="password != null">
+        `password`,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.Dean">
+    update dean
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        `password` = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.Dean">
     update dean
-    set name = #{name,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
+    set `name` = #{name,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 'false' as QUERYID,id, name, password, code, remark
-    from dean
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, name, password, code, remark
-    from dean
-  </select>
 </mapper>

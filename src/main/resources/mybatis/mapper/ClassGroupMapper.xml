@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mw.education.dao.ClassGroupMapper">
+
+  <resultMap id="ClassAndSpecialityResultMap" type="com.mw.education.domain.joined_entity.ClassAndSpeciality">
+    <association property="classGroup" columnPrefix="class_" javaType="com.mw.education.domain.compose.ClassGroup">
+      <id column="id" property="id" javaType="java.lang.Integer" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="code" property="code" jdbcType="VARCHAR" />
+      <result column="speciality_id" property="specialityId" jdbcType="INTEGER" />
+      <result column="remark" property="remark" jdbcType="VARCHAR" />
+    </association>
+    <association property="speciality" columnPrefix="speciality_" javaType="com.mw.education.domain.compose.Speciality">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="code" property="code" jdbcType="VARCHAR"/>
+      <result column="grade" property="grade" jdbcType="VARCHAR" />
+      <result column="college_id" property="collegeId" jdbcType="INTEGER" />
+      <result column="remark" property="remark" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+
   <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.ClassGroup">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -35,4 +54,22 @@
     select id, name, code, speciality_id, remark
     from class
   </select>
+  
+  <select id="getAllClassAndSpeciality" resultMap="ClassAndSpecialityResultMap">
+    select 'false' as QUERYID, c.id AS class_id, c.name AS class_name, c.code AS class_code, c.speciality_id AS class_speciality_id,
+           c.remark AS class_remark, s.id AS speciality_id, s.name AS speciality_name, s.code AS speciality_code,
+           s.grade AS speciality_grade, s.college_id  AS speciality_college_id,  s.remark AS speciality_remark
+    from class c
+    inner join speciality s on c.speciality_id = s.id
+  </select>
+
+  <select id="getClassAndSpecialityById" resultMap="ClassAndSpecialityResultMap">
+    select 'false' as QUERYID, c.id AS class_id, c.name AS class_name, c.code AS class_code, c.speciality_id AS class_speciality_id,
+           c.remark AS class_remark, s.id AS speciality_id, s.name AS speciality_name, s.code AS speciality_code,
+           s.grade AS speciality_grade, s.college_id  AS speciality_college_id,  s.remark AS speciality_remark
+    from class c
+    inner join speciality s on c.speciality_id = s.id
+    where c.id = #{id,jdbcType=INTEGER}
+  </select>
+
 </mapper>

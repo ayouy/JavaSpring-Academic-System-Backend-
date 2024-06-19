@@ -1,6 +1,7 @@
 package com.mw.education.dao;
 
 import com.mw.education.domain.compose.ClassGroup;
+import com.mw.education.domain.joined_entity.ClassAndSpeciality;
 
 import java.util.List;
 
@@ -15,5 +16,8 @@ public interface ClassGroupMapper {
 
     int updateByPrimaryKey(ClassGroup row);
 
+    List<ClassAndSpeciality> getAllClassAndSpeciality();
+
+    ClassAndSpeciality getClassAndSpecialityById(Integer id);
     
 }

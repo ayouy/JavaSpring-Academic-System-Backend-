@@ -1,10 +1,11 @@
 package com.mw.education.domain.compose;
 
+import lombok.Data;
 import lombok.Getter;
 
 import java.io.Serializable;
 
-@Getter
+@Data
 public class College implements Serializable {
     private Integer id;
 
