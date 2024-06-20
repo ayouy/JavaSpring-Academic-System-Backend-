@@ -1,11 +1,10 @@
 package com.mw.education.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mw.education.dao.CourseMapper;
 import com.mw.education.domain.compose.Course;
 import com.mw.education.domain.joined_entity.CourseAndTerm;
 import com.mw.education.domain.joined_entity.ClassCourseAndCourse;
+import com.mw.education.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +13,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/courses")
 public class CourseController {
-
     @Autowired
-    private CourseMapper courseMapper;
+    private CourseService courseService;
 
     @GetMapping
     public AjaxResult selectAll(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
                                 @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Course> list = courseMapper.selectAll();
-        PageInfo<Course> pageInfo = new PageInfo<>(list);
-
+        PageInfo<Course> pageInfo = courseService.selectAll(pageSize, pageNum);
         return AjaxResult.success().data(pageInfo);
     }
 
     @GetMapping("/{id}")
     public AjaxResult selectById(@PathVariable int id) {
-        Course course = courseMapper.selectByPrimaryKey(id);
+        Course course = courseService.selectById(id);
         if (course != null) {
             return AjaxResult.success().data(course);
         } else {
@@ -40,7 +35,7 @@ public class CourseController {
 
     @GetMapping("/courseAndTerm/{id}")
     public AjaxResult getCourseAndTermByCourseId(@PathVariable int id) {
-        CourseAndTerm courseAndTerm = courseMapper.getCourseAndTermByCourseId(id);
+        CourseAndTerm courseAndTerm = courseService.getCourseAndTermByCourseId(id);
         if (courseAndTerm != null) {
             return AjaxResult.success().data(courseAndTerm);
         } else {
@@ -50,13 +45,13 @@ public class CourseController {
 
     @GetMapping("/allClassCourseAndCourse")
     public AjaxResult getAllClassCourseAndCourse() {
-        List<ClassCourseAndCourse> list = courseMapper.getAllClassCourseAndCourse();
+        List<ClassCourseAndCourse> list = courseService.getAllClassCourseAndCourse();
         return AjaxResult.success().data(list);
     }
 
     @GetMapping("/classCourseAndCourse/{id}")
     public AjaxResult getClassCourseAndCourseByCourseId(@PathVariable int id) {
-        ClassCourseAndCourse classCourseAndCourse = courseMapper.getClassCourseAndCourseByCourseId(id);
+        ClassCourseAndCourse classCourseAndCourse = courseService.getClassCourseAndCourseByCourseId(id);
         if (classCourseAndCourse != null) {
             return AjaxResult.success().data(classCourseAndCourse);
         } else {
@@ -66,8 +61,8 @@ public class CourseController {
 
     @DeleteMapping("/{id}")
     public AjaxResult deleteById(@PathVariable int id) {
-        int n = courseMapper.deleteByPrimaryKey(id);
-        if (n > 0) {
+        boolean isSuccess = courseService.deleteById(id);
+        if (isSuccess) {
             return AjaxResult.success().msg("删除成功");
         } else {
             return AjaxResult.error().msg("删除失败，未找到对应课程");
@@ -76,8 +71,8 @@ public class CourseController {
 
     @PutMapping
     public AjaxResult edit(@RequestBody Course course) {
-        int n = courseMapper.updateByPrimaryKeySelective(course);
-        if (n > 0) {
+        boolean isSuccess = courseService.edit(course);
+        if (isSuccess) {
             return AjaxResult.success().msg("更新成功");
         } else {
             return AjaxResult.error().msg("更新失败，未找到对应课程");
@@ -86,8 +81,8 @@ public class CourseController {
 
     @PostMapping
     public AjaxResult add(@RequestBody Course course) {
-        int n = courseMapper.insertSelective(course);
-        if (n > 0) {
+        boolean isSuccess = courseService.add(course);
+        if (isSuccess) {
             return AjaxResult.success().msg("添加成功");
         } else {
             return AjaxResult.error().msg("添加失败");

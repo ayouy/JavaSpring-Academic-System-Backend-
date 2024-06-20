@@ -3,25 +3,25 @@
 <mapper namespace="com.mw.education.dao.TeacherCourseMapper">
 
   <resultMap id="TeacherCourseAndCourseResultMap" type="com.mw.education.domain.joined_entity.TeacherCourseAndCourse">
-    <association property="teacherAndCollege.teacher" columnPrefix="teacher_" javaType="com.mw.education.domain.joined_entity.TeacherAndCollege">
-      <id column="id" property="teacher.id"/>
-      <result column="name" property="teacher.name"/>
-      <result column="password" property="teacher.password"/>
-      <result column="college_id" property="teacher.collegeId"/>
-      <result column="code" property="teacher.code"/>
-      <result column="remark" property="teacher.remark"/>
+    <association property="teacherAndCollege.teacher" columnPrefix="teacher_" javaType="com.mw.education.domain.compose.Teacher">
+      <id column="teacher_id" property="id"/>
+      <result column="teacher_name" property="name"/>
+      <result column="teacher_password" property="password"/>
+      <result column="teacher_code" property="code"/>
+      <result column="teacher_college_id" property="collegeId"/>
+      <result column="teacher_remark" property="remark"/>
     </association>
     <association property="teacherAndCollege.college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
-      <id column="id" property="id"/>
-      <result column="name" property="name"/>
-      <result column="remark" property="remark"/>
+      <id column="college_id" property="id"/>
+      <result column="college_name" property="name"/>
+      <result column="college_remark" property="remark"/>
     </association>
     <association property="course" columnPrefix="course_" javaType="com.mw.education.domain.compose.Course">
-      <id column="id" property="id"/>
-      <result column="name" property="name"/>
-      <result column="code" property="code"/>
-      <result column="term_id" property="termId"/>
-      <result column="credit" property="credit"/>
+      <id column="course_id" property="id"/>
+      <result column="course_name" property="name"/>
+      <result column="course_code" property="code"/>
+      <result column="course_term_id" property="termId"/>
+      <result column="course_credit" property="credit"/>
     </association>
   </resultMap>
 
@@ -30,9 +30,14 @@
     <result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
     <result column="course_id" jdbcType="INTEGER" property="courseId" />
   </resultMap>
+
+  <select id="getPrimaryKeyByTeacherIdAndCourseId" resultType="java.lang.Integer">
+    select id from teacher_course
+    where teacher_id = #{param1,jdbcType=INTEGER} and course_id = #{param2,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from teacher_course
-    where id = #{id,jdbcType=INTEGER}
+    where  id=#{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.mw.education.domain.compose.TeacherCourse">
     insert into teacher_course (id, teacher_id, course_id
@@ -40,13 +45,44 @@
     values (#{id,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}
       )
   </insert>
+  <insert id="insertSelective"  keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.TeacherCourse">
+    insert into teacher_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="teacherId!= null">
+        teacher_id,
+      </if>
+      <if test="courseId!= null">
+        course_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.TeacherCourse">
+    update teacher_course
+    <set>
+      <if test="teacherId != null">
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.TeacherCourse">
     update teacher_course
     set teacher_id = #{teacherId,jdbcType=INTEGER},
       course_id = #{courseId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKeyAndForeignKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'false' as QUERYID,id, teacher_id, course_id
     from teacher_course
     where id = #{id,jdbcType=INTEGER}
@@ -56,11 +92,11 @@
     from teacher_course
   </select>
   <select id="getAllTeacherCourseAndCourse" resultMap="TeacherCourseAndCourseResultMap">
-    SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
-           t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
-           c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
-           co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
-           co.term_id AS "course_term_id", co.credit AS "course_credit"
+    SELECT t.id AS "teacher_teacher_id", t.name AS "teacher_teacher_name", t.password AS "teacher_teacher_password",
+           t.code AS "teacher_teacher_code", t.college_id AS "teacher_teacher_college_id", t.remark AS "teacher_teacher_remark",
+           c.id AS "college_college_id", c.name AS "college_college_name", c.remark AS "college_college_remark",
+           co.id AS "course_course_id", co.name AS "course_course_name", co.code AS "course_course_code",
+           co.term_id AS "course_course_term_id", co.credit AS "course_course_credit"
     FROM teacher_course tc
            JOIN teacher t ON t.id = tc.teacher_id
            JOIN college c ON t.college_id = c.id
@@ -68,11 +104,11 @@
   </select>
 
   <select id="getTeacherCourseAndCourseByTeacherCourseId" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
-    SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
-           t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
-           c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
-           co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
-           co.term_id AS "course_term_id", co.credit AS "course_credit"
+    SELECT t.id AS "teacher_teacher_id", t.name AS "teacher_teacher_name", t.password AS "teacher_teacher_password",
+           t.code AS "teacher_teacher_code", t.college_id AS "teacher_teacher_college_id", t.remark AS "teacher_teacher_remark",
+           c.id AS "college_college_id", c.name AS "college_college_name", c.remark AS "college_college_remark",
+           co.id AS "course_course_id", co.name AS "course_course_name", co.code AS "course_course_code",
+           co.term_id AS "course_course_term_id", co.credit AS "course_course_credit"
     FROM teacher_course tc
       JOIN teacher t ON t.id = tc.teacher_id
       JOIN college c ON t.college_id = c.id
@@ -81,11 +117,11 @@
   </select>
 
   <select id="getTeacherCourseAndCourseByTeacherId" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
-    SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
-           t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
-           c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
-           co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
-           co.term_id AS "course_term_id", co.credit AS "course_credit"
+    SELECT t.id AS "teacher_teacher_id", t.name AS "teacher_teacher_name", t.password AS "teacher_teacher_password",
+    t.code AS "teacher_teacher_code", t.college_id AS "teacher_teacher_college_id", t.remark AS "teacher_teacher_remark",
+    c.id AS "college_college_id", c.name AS "college_college_name", c.remark AS "college_college_remark",
+    co.id AS "course_course_id", co.name AS "course_course_name", co.code AS "course_course_code",
+    co.term_id AS "course_course_term_id", co.credit AS "course_course_credit"
     FROM teacher_course tc
       JOIN teacher t ON t.id = tc.teacher_id
       JOIN college c ON t.college_id = c.id

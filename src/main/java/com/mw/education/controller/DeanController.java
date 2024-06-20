@@ -1,16 +1,12 @@
 package com.mw.education.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mw.education.dao.DeanMapper;
 import com.mw.education.domain.compose.Dean;
 import com.mw.education.domain.joined_entity.CollegeAndDean;
-import com.mw.education.controller.AjaxResult;
+import com.mw.education.service.DeanService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,21 +14,18 @@ import java.util.List;
 public class DeanController {
 
     @Autowired
-    private DeanMapper deanMapper;
+    private DeanService deanService;
 
     @GetMapping
     public AjaxResult selectAll(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
                                 @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Dean> list = deanMapper.selectAll();
-        PageInfo<Dean> pageInfo = new PageInfo<>(list);
-
+        PageInfo<Dean> pageInfo = deanService.selectAll(pageSize, pageNum);
         return AjaxResult.success().data(pageInfo);
     }
 
     @GetMapping("/{id}")
     public AjaxResult selectById(@PathVariable int id) {
-        Dean dean = deanMapper.selectByPrimaryKey(id);
+        Dean dean = deanService.selectById(id);
         if (dean != null) {
             return AjaxResult.success().data(dean);
         } else {
@@ -42,13 +35,13 @@ public class DeanController {
 
     @GetMapping("/collegeAndDean")
     public AjaxResult getAllCollegeAndDean() {
-        List<CollegeAndDean> list = deanMapper.getAllCollegeAndDean();
+        List<CollegeAndDean> list = deanService.getAllCollegeAndDean();
         return AjaxResult.success().data(list);
     }
 
     @GetMapping("/collegeAndDean/{id}")
     public AjaxResult getCollegeAndDeanByDeanId(@PathVariable int id) {
-        CollegeAndDean collegeAndDean = deanMapper.getCollegeAndDeanByDeanId(id);
+        CollegeAndDean collegeAndDean = deanService.getCollegeAndDeanByDeanId(id);
         if (collegeAndDean != null) {
             return AjaxResult.success().data(collegeAndDean);
         } else {
@@ -58,8 +51,8 @@ public class DeanController {
 
     @DeleteMapping("/{id}")
     public AjaxResult deleteById(@PathVariable int id) {
-        int n = deanMapper.deleteByPrimaryKey(id);
-        if (n > 0) {
+        boolean isSuccess = deanService.deleteById(id);
+        if (isSuccess) {
             return AjaxResult.success().msg("删除成功");
         } else {
             return AjaxResult.error().msg("删除失败，未找到对应管理人员");
@@ -68,8 +61,8 @@ public class DeanController {
 
     @PutMapping
     public AjaxResult edit(@RequestBody Dean dean) {
-        int n = deanMapper.updateByPrimaryKeySelective(dean);
-        if (n > 0) {
+        boolean isSuccess = deanService.edit(dean);
+        if (isSuccess) {
             return AjaxResult.success().msg("更新成功");
         } else {
             return AjaxResult.error().msg("更新失败，未找到对应管理人员");
@@ -78,8 +71,8 @@ public class DeanController {
 
     @PostMapping
     public AjaxResult add(@RequestBody Dean dean) {
-        int n = deanMapper.insertSelective(dean);
-        if (n > 0) {
+        boolean isSuccess = deanService.add(dean);
+        if (isSuccess) {
             return AjaxResult.success().msg("添加成功");
         } else {
             return AjaxResult.error().msg("添加失败");

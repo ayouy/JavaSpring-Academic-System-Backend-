@@ -11,7 +11,7 @@ public class  Speciality implements Serializable {
 
     private String name;
 
-    private LocalDate grade;
+    private String grade;
 
     private String code;
 
@@ -29,7 +29,7 @@ public class  Speciality implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public void setGrade(LocalDate grade) {
+    public void setGrade(String grade) {
         this.grade = grade;
     }
 

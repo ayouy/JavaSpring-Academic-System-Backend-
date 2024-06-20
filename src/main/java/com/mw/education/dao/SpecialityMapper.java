@@ -10,12 +10,14 @@ public interface SpecialityMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(Speciality row);
+    int insertSelective(Speciality row);
 
     Speciality selectByPrimaryKey(Integer id);
 
     List<Speciality> selectAll();
 
     int updateByPrimaryKey(Speciality row);
+    int updateByPrimaryKeySelective(Speciality row);
 
     SpecialityAndCollege getSpecialityAndCollegeBySpecialityId(Integer id);
 

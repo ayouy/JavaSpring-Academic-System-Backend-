@@ -56,6 +56,43 @@
       #{code,jdbcType=VARCHAR}, #{collegeId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
       )
   </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Speciality">
+    insert into speciality
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="name != null">
+            name,
+          </if>
+          <if test="grade != null">
+            grade,
+          </if>
+          <if test="code != null">
+            code,
+          </if>
+          <if test="collegeId != null">
+            college_id,
+          </if>
+          <if test="remark != null">
+            remark,
+          </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+          <if test="name != null">
+            #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="grade != null">
+            #{grade,jdbcType=DATE},
+          </if>
+          <if test="code != null">
+            #{code,jdbcType=VARCHAR},
+          </if>
+          <if test="collegeId != null">
+            #{collegeId,jdbcType=INTEGER},
+          </if>
+          <if test="remark != null">
+            #{remark,jdbcType=VARCHAR},
+          </if>
+    </trim>
+</insert>
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.Speciality">
     update speciality
     set name = #{name,jdbcType=VARCHAR},
@@ -63,6 +100,27 @@
       code = #{code,jdbcType=VARCHAR},
       college_id = #{collegeId,jdbcType=INTEGER},
       remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.Speciality">
+    update speciality
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="grade != null">
+        grade = #{grade,jdbcType=DATE},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeId != null">
+        college_id = #{collegeId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

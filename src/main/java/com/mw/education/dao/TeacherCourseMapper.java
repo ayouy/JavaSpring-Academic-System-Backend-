@@ -8,13 +8,17 @@ import java.util.List;
 public interface TeacherCourseMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(TeacherCourse row);
+    Integer getPrimaryKeyByTeacherIdAndCourseId(Integer id,Integer courseId);
 
-    TeacherCourse selectByPrimaryKey(Integer id);
+    int insert(TeacherCourse row);
+    int insertSelective(TeacherCourse row);
+
+    TeacherCourse selectByPrimaryKeyAndForeignKey(Integer id);
 
     List<TeacherCourse> selectAll();
 
     int updateByPrimaryKey(TeacherCourse row);
+    int updateByPrimaryKeySelective(TeacherCourse row);
 
     List<TeacherCourseAndCourse> getAllTeacherCourseAndCourse();
 
