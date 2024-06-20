@@ -82,7 +82,13 @@
 
   <select id="getClassCourseAndCourseByTermId" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
     <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
-    WHERE cc. = #{termId,jdbcType=INTEGER}
+    WHERE c.term_id = #{termId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from term
   </select>
 
 </mapper>

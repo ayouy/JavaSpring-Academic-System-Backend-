@@ -41,12 +41,47 @@
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
     )
   </insert>
+
+  <insert id="insertSelective"  keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.College">
+    insert into college
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.College">
     update college
     set name = #{name,jdbcType=VARCHAR},
     remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.College">
+    update college
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'false' as QUERYID,id, name, remark
     from college
@@ -74,6 +109,7 @@
     <include refid="com.mw.education.dao.SpecialityMapper.selectSpecialityAndCollegeColumns"/>
     WHERE s.college_id = #{id,jdbcType=INTEGER}
   </select>
+
 
 
 </mapper>

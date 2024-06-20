@@ -11,12 +11,14 @@ public interface TeacherMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(Teacher row);
+    int insertSelective(Teacher row);
 
     Teacher selectByPrimaryKey(Integer id);
 
     List<Teacher> selectAll();
 
     int updateByPrimaryKey(Teacher row);
+    int updateByPrimaryKeySelective(Teacher row);
 
     TeacherAndCollege getTeacherAndCollegeByTeacherId(Integer id);
 

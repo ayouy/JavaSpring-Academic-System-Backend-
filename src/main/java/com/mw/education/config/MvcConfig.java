@@ -1,5 +1,7 @@
 package com.mw.education.config;
 
+import com.mw.education.component.TermOperationInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -10,10 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+    @Autowired
+    private TermOperationInterceptor termOperationInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
-
+       // registry.addInterceptor(termOperationInterceptor).addPathPatterns("/terms");
         // 在LoginController中定义了以下特定的URL的handler method
 //        registry.addInterceptor(new LoginInterceptor())
 //                .excludePathPatterns("/login", "/logout", "/login-info")

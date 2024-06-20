@@ -10,17 +10,19 @@ public interface CollegeMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(College row);
+    int insertSelective(College row);
 
     College selectByPrimaryKey(Integer id);
 
     List<College> selectAll();
 
     int updateByPrimaryKey(College row);
+    int updateByPrimaryKeySelective(College row);
 
     List<CollegeAndDean>  getAllCollegeAndDean();
-    CollegeAndDean getCollegeAndDeanByCollegeId(Integer id);
+    List<CollegeAndDean> getCollegeAndDeanByCollegeId(Integer id);
 
-    SpecialityAndCollege getAllSpecialityAndCollege();
+    List<SpecialityAndCollege> getAllSpecialityAndCollege();
 
     List<SpecialityAndCollege> getSpecialityAndCollegeById(Integer id);
 }

@@ -10,12 +10,14 @@ public interface ClassGroupMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(ClassGroup row);
+    int insertSelective(ClassGroup row);
 
     ClassGroup selectByPrimaryKey(Integer id);
 
     List<ClassGroup> selectAll();
 
     int updateByPrimaryKey(ClassGroup row);
+    int updateByPrimaryKeySelective(ClassGroup row);
 
     List<ClassAndSpeciality> getAllClassAndSpeciality();
 
@@ -23,6 +25,6 @@ public interface ClassGroupMapper {
 
     List<ClassCourseAndCourse> getAllClassCourseAndCourse();
 
-    ClassCourseAndCourse getClassCourseAndCourseByClassId(Integer id);
+    List<ClassCourseAndCourse> getClassCourseAndCourseByClassId(Integer id);
     
 }

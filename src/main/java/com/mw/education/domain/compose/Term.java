@@ -3,6 +3,8 @@ package com.mw.education.domain.compose;
 import java.util.Date;
 import lombok.Data;
 
+import javax.validation.constraints.AssertTrue;
+
 /**
  * 学期表
  */
@@ -13,4 +15,12 @@ public class Term {
     private String name;
     private Date startDate;
     private Date endDate;
+
+    @AssertTrue(message = "startDate必须早于endDate")
+    public boolean isStartBeforeEnd() {
+        if (startDate == null || endDate == null) {
+            return true;
+        }
+        return startDate.before(endDate);
+    }
 }

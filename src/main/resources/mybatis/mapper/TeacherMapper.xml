@@ -23,7 +23,9 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
 
-
+  <sql id="Base_Column_List">
+    id, name, password, code, college_id, remark
+  </sql>
   <select id="getTeacherAndCollegeByTeacherId" parameterType="java.lang.Integer" resultMap="ExtendResultMap1">
     select 'false' as QUERYID, teacher.id,teacher.name,teacher.password,teacher.code,teacher.remark,
            college_id as college_id,college.name as college_name,college.remark as college_remark
@@ -48,13 +50,49 @@
     delete from teacher
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.mw.education.domain.compose.Teacher">
-    insert into teacher (id, name, password,
-                         code, college_id, remark
-    )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
-            #{code,jdbcType=VARCHAR}, #{collegeId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
-           )
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Teacher" useGeneratedKeys="true">
+    insert into teacher (`name`, password, code, college_id, remark)
+    values (#{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR},
+    #{collegeId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Teacher" useGeneratedKeys="true">
+    insert into teacher
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="collegeId != null">
+        college_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeId != null">
+        #{collegeId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.Teacher">
     update teacher
@@ -65,8 +103,32 @@
         remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.Teacher">
+    update teacher
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeId != null">
+        college_id = #{collegeId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="TeacherResultMap">
-    select 'false' as QUERYID,id, name, password, code, college_id, remark
+    select
+    <include refid="Base_Column_List" />
     from teacher
     where id = #{id,jdbcType=INTEGER}
   </select>

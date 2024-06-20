@@ -37,6 +37,39 @@
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
       #{specialityId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
   </insert>
+
+  <insert id="insertSelective"  keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.ClassGroup" >
+    insert into class
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name!= null">
+          name,
+      </if>
+      <if test="code!= null">
+          code,
+      </if>
+      <if test="specialityId!= null">
+          speciality_id,
+      </if>
+      <if test="remark!= null">
+          remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name!= null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code!= null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="specialityId!= null">
+        #{specialityId,jdbcType=INTEGER},
+      </if>
+      <if test="remark!= null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
   <update id="updateByPrimaryKey" parameterType="com.mw.education.domain.compose.ClassGroup">
     update class
     set name = #{name,jdbcType=VARCHAR},
@@ -45,6 +78,26 @@
       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.mw.education.domain.compose.ClassGroup">
+    update class
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="specialityId != null">
+        speciality_id = #{specialityId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'false' as QUERYID,id, name, code, speciality_id, remark
     from class
