@@ -79,4 +79,17 @@
       JOIN course co ON co.id = tc.course_id
     WHERE tc.id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="getTeacherCourseAndCourseByTeacherId" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
+    SELECT t.id AS "teacher_id", t.name AS "teacher_name", t.password AS "teacher_password",
+           t.code AS "teacher_code", t.college_id AS "teacher_college_id", t.remark AS "teacher_remark",
+           c.id AS "college_id", c.name AS "college_name", c.remark AS "college_remark",
+           co.id AS "course_id", co.name AS "course_name", co.code AS "course_code",
+           co.term_id AS "course_term_id", co.credit AS "course_credit"
+    FROM teacher_course tc
+      JOIN teacher t ON t.id = tc.teacher_id
+      JOIN college c ON t.college_id = c.id
+      JOIN course co ON co.id = tc.course_id
+    WHERE tc.teacher_id = #{id,jdbcType=INTEGER}
+  </select>
 </mapper>

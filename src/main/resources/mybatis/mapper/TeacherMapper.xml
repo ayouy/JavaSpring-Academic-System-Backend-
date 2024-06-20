@@ -37,6 +37,12 @@
     from teacher join college on teacher.college_id=college.id
   </select>
 
+  <select id="getTeacherAndCollegeByCollegeId" parameterType="java.lang.Integer" resultMap="ExtendResultMap1">
+          select 'false' as QUERYID, teacher.id,teacher.name,teacher.password,teacher.code,teacher.remark,
+                 college_id as college_id,college.name as college_name,college.remark as college_remark
+          from teacher join college on teacher.college_id=college.id
+          where college.id = #{id,jdbcType=INTEGER}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from teacher

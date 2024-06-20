@@ -75,4 +75,14 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+
+  <select id="getAllClassCourseAndCourse" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
+    <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
+  </select>
+
+  <select id="getClassCourseAndCourseByTermId" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
+    <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
+    WHERE cc. = #{termId,jdbcType=INTEGER}
+  </select>
+
 </mapper>

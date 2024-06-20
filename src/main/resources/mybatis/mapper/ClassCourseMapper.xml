@@ -100,6 +100,16 @@
 
   <select id="getClassCourseAndCourseByClassCourseId" parameterType="java.lang.Integer" resultMap="ClassCourseAndCourseResultMap">
     <include refid="selectAllJoinedCourseColumns" />
-    WHERE cc.id = #{id,jdbcType=INTEGER}
+    WHERE c.term_id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getClassCourseAndCourseByCourseId" parameterType="java.lang.Integer" resultMap="ClassCourseAndCourseResultMap">
+    <include refid="selectAllJoinedCourseColumns" />
+    WHERE cc.course_id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getClassCourseAndCourseByClassId" parameterType="java.lang.Integer" resultMap="ClassCourseAndCourseResultMap">
+    <include refid="selectAllJoinedCourseColumns" />
+    WHERE cc.class_id = #{id,jdbcType=INTEGER}
   </select>
 </mapper>

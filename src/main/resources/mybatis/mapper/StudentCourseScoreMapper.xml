@@ -7,6 +7,22 @@
     <result column="course_id" jdbcType="INTEGER" property="courseId" />
     <result column="score" jdbcType="DECIMAL" property="score" />
   </resultMap>
+  <resultMap id="StudentCourseScoreAndCourseResultMap" type="com.mw.education.domain.joined_entity.StudentCourseScoreAndCourse">
+    <association property="studentCourseScore" columnPrefix="sutdent_classcourse_score_" javaType="com.mw.education.domain.compose.StudentCourseScore">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="student_id" property="studentId" jdbcType="INTEGER" />
+      <result column="course_id" property="courseId" jdbcType="INTEGER" />
+      <result column="score" property="score" jdbcType="DECIMAL" />
+    </association>
+    <association property="course" columnPrefix="course_" javaType="com.mw.education.domain.compose.Course">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="code" property="code" jdbcType="VARCHAR" />
+      <result column="term_id" property="termId" jdbcType="INTEGER" />
+      <result column="credit" property="credit" jdbcType="DECIMAL" />
+      <result column="college_id" property="collegeId" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
   <sql id="Base_Column_List">
     id, student_id, course_id, score
   </sql>
@@ -74,4 +90,28 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <sql id="selectAllJoinedCourseColumns">
+        select 'false' as QUERYID, scs.id AS sutdent_classcourse_score_id, scs.student_id AS sutdent_classcourse_score_student_id, scs.course_id AS sutdent_classcourse_score_course_id, scs.score AS sutdent_classcourse_score_score,
+        c.id AS course_id, c.name AS course_name, c.code AS course_code, c.term_id AS course_term_id, c.credit AS course_credit, c.college_id AS course_college_id
+        from student_course_score scs
+        inner join course c on scs.course_id = c.id
+  </sql>
+  <select id="getAllStudentCourseScoreAndCourse" resultMap="StudentCourseScoreAndCourseResultMap">
+    <include refid="selectAllJoinedCourseColumns" />
+  </select>
+
+  <select id="getStudentCourseScoreAndCourseByStudentIdAndCourseId"  resultMap="StudentCourseScoreAndCourseResultMap">
+    <include refid="selectAllJoinedCourseColumns" />
+    where scs.student_id = #{param1,jdbcType=INTEGER} and scs.course_id = #{param2,jdbcType=INTEGER}
+  </select>
+
+  <select id="getStudentCourseScoreAndCourseByStudentId"  resultMap="StudentCourseScoreAndCourseResultMap">
+     <include refid="selectAllJoinedCourseColumns" />
+    where scs.student_id = #{param1,jdbcType=INTEGER}
+  </select>
+
+  <select id="getStudentCourseScoreAndCourseByCourseId"  resultMap="StudentCourseScoreAndCourseResultMap">
+    <include refid="selectAllJoinedCourseColumns" />
+    where scs.course_id = #{param1,jdbcType=INTEGER}
+  </select>
 </mapper>

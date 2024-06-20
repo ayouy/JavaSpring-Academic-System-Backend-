@@ -20,6 +20,8 @@ public interface TeacherMapper {
 
     TeacherAndCollege getTeacherAndCollegeByTeacherId(Integer id);
 
+    List<TeacherAndCollege> getTeacherAndCollegeByCollegeId(Integer id);
+
     List<TeacherAndCollege> getAllTeacherAndCollege();
 
     @Select("select count(id) from teacher where code =#{code} and password =#{password}")

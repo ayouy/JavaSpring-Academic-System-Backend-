@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mw.education.dao.StudentMapper">
   <resultMap id="StudentAndClassResultMap" type="com.mw.education.domain.joined_entity.StudentAndClass">
-    <id column="id" property="student.id" />
-    <result column="name" property="student.name" />
-    <result column="password" property="student.password" />
-    <result column="code" property="student.code" />
-    <result column="class_id" property="student.classId" />
-    <result column="remark" property="student.remark" />
+    <id column="student_id" property="student.id" />
+    <result column="student_name" property="student.name" />
+    <result column="student_password" property="student.password" />
+    <result column="student_code" property="student.code" />
+    <result column="student_class_id" property="student.classId" />
+    <result column="student_remark" property="student.remark" />
 
     <result column="class_name" property="classGroup.name" />
     <result column="class_code" property="classGroup.code" />
@@ -60,16 +60,27 @@
   </select>
 
   <select id="getAllStudentAndClass" resultMap="StudentAndClassResultMap">
-    select s.id, s.name, s.password, s.code, s.class_id, s.remark, c.name as class_name, c.code as class_code, c.speciality_id
+    select s.id as student_id, s.name as student_name, s.password as student_password,  s.code as student_code ,
+           s.class_id as student_class_id, s.remark as student_remark, c.name as class_name, c.code as class_code, c.speciality_id
     from student s
     inner join class c on s.class_id = c.id
   </select>
 
   <select id="getStudentAndClassByStudentId" parameterType="java.lang.Integer" resultMap="StudentAndClassResultMap">
-    select s.id, s.name, s.password, s.code, s.class_id, s.remark, c.name as class_name, c.code as class_code, c.speciality_id
+    select s.id as student_id, s.name as student_name, s.password as student_password, s.code as student_code,
+      s.class_id as student_class_id, s.remark as student_remark, c.name as class_name, c.code as class_code, c.speciality_id
     from student s
     inner join class c on s.class_id = c.id
     where s.id = #{id,jdbcType=INTEGER}
  </select>
+
+  <select id="getStudentAndClassByClassId" parameterType="java.lang.Integer" resultMap="StudentAndClassResultMap">
+    select s.id as student_id, s.name as student_name, s.password as student_password,s.code as student_code,
+    s.class_id as student_class_id, s.remark as student_remark,
+    c.name as class_name, c.code as class_code, c.speciality_id
+    from student s
+    inner join class c on s.class_id = c.id
+    where c.id = #{id,jdbcType=INTEGER}
+  </select>
 
 </mapper>

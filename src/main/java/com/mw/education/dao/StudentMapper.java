@@ -21,6 +21,8 @@ public interface StudentMapper {
     List<StudentAndClass> getAllStudentAndClass();
 
     StudentAndClass getStudentAndClassByStudentId(@Param("id") Integer id);
+    StudentAndClass getStudentAndClassByClassId(@Param("id") Integer id);
+
 
     @Select("SELECT count(id) from student where code=#{code} and password=#{password}")
     int countByCodeAndPassword(@Param("code")String code,@Param("password") String password);

@@ -22,4 +22,7 @@ public interface ClassCourseMapper {
 
     List<ClassCourseAndCourse> getAllClassCoresAndCourse();
     ClassCourseAndCourse getClassCourseAndCourseByClassCourseId(Integer id);
+
+    List<ClassCourseAndCourse> getClassCourseAndCourseByClassId(Integer id);
+    List<ClassCourseAndCourse> getClassCourseAndCourseByCourseId(Integer id);
 }

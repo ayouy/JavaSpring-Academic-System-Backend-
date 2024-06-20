@@ -19,4 +19,6 @@ public interface TeacherCourseMapper {
     List<TeacherCourseAndCourse> getAllTeacherCourseAndCourse();
 
     TeacherCourseAndCourse getTeacherCourseAndCourseByTeacherCourseId(Integer id);
+
+    List<TeacherCourseAndCourse> getTeacherCourseAndCourseByTeacherId(Integer id);
 }
