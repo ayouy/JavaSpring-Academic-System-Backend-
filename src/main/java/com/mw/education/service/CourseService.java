@@ -11,6 +11,7 @@ public interface CourseService {
     PageInfo<Course> selectAll(int pageSize, int pageNum);
     Course selectById(int id);
     CourseAndTerm getCourseAndTermByCourseId(int id);
+    PageInfo<CourseAndTerm> getAllCourseAndTerm(int pageSize, int pageNum);
     List<ClassCourseAndCourse> getAllClassCourseAndCourse();
     ClassCourseAndCourse getClassCourseAndCourseByCourseId(int id);
 

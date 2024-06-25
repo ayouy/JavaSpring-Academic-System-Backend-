@@ -42,7 +42,12 @@ public class CourseServiceImpl implements CourseService {
     public CourseAndTerm getCourseAndTermByCourseId(int id) {
         return courseMapper.getCourseAndTermByCourseId(id);
     }
-
+    @Override
+    public PageInfo<CourseAndTerm> getAllCourseAndTerm(int pageSize,int pageNum){
+        PageHelper.startPage(pageNum, pageSize);
+        List<CourseAndTerm> list = courseMapper.getAllCourseAndTerm();
+        return new PageInfo<>(list);
+    }
     @Override
     public List<ClassCourseAndCourse> getAllClassCourseAndCourse() {
         return courseMapper.getAllClassCourseAndCourse();

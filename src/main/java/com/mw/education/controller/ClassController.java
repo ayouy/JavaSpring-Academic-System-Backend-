@@ -18,6 +18,12 @@ public class ClassController {
     @Autowired
     private ClassGroupService classGroupService;
 
+    @GetMapping
+    public AjaxResult getAllClassesAndSpeciality(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                     @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<ClassAndSpeciality> classGroups = classGroupService.getAllClassAndSpeciality(pageNum,pageSize);
+        return AjaxResult.success().data(classGroups);
+    }
     @GetMapping("/")
     public AjaxResult getAllClasses(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
                                     @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
@@ -36,8 +42,9 @@ public class ClassController {
     }
 
     @GetMapping("/classAndSpeciality")
-    public AjaxResult getAllClassAndSpeciality() {
-        PageInfo<ClassAndSpeciality> pageInfo = classGroupService.getAllClassAndSpeciality();
+    public AjaxResult getAllClassAndSpeciality(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                                @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<ClassAndSpeciality> pageInfo = classGroupService.getAllClassAndSpeciality(pageSize, pageNum);
         if (pageInfo != null && pageInfo.getList() != null && !pageInfo.getList().isEmpty()) {
             return AjaxResult.success().data(pageInfo);
         } else {

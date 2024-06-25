@@ -11,20 +11,28 @@
   </resultMap>
 
   <resultMap id="CourseAndTermResultMap" type="com.mw.education.domain.joined_entity.CourseAndTerm">
-    <association property="course" columnPrefix="course_" javaType="com.mw.education.domain.compose.Course">
+    <association property="course"  columnPrefix="course_" javaType="com.mw.education.domain.compose.Course">
       <id column="id" jdbcType="INTEGER" property="id" />
       <result column="name" jdbcType="VARCHAR" property="name" />
       <result column="code" jdbcType="VARCHAR" property="code" />
+      <result column="term_id" jdbcType="INTEGER" property="termId" />
       <result column="credit" jdbcType="DECIMAL" property="credit" />
       <result column="college_id" jdbcType="INTEGER" property="collegeId" />
     </association>
-    <association property="term"  columnPrefix="term_" javaType="com.mw.education.domain.compose.Term">
+    <association property="term" javaType="com.mw.education.domain.compose.Term">
+      <id column="term_id" jdbcType="INTEGER" property="id" />
+      <result column="term_name" jdbcType="VARCHAR" property="name" />
+      <result column="term_start_date" jdbcType="DATE" property="startDate" />
+      <result column="term_end_date" jdbcType="DATE" property="endDate" />
+    </association>
+    <association property="college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
       <id column="id" jdbcType="INTEGER" property="id" />
       <result column="name" jdbcType="VARCHAR" property="name" />
-      <result column="start_date" jdbcType="DATE" property="startDate" />
-      <result column="end_date" jdbcType="DATE" property="endDate" />
+      <result column="remark" jdbcType="VARCHAR" property="remark" />
     </association>
   </resultMap>
+
+
 
   <sql id="Base_Column_List">
     id, `name`, code, term_id, credit, college_id
@@ -133,13 +141,16 @@
   <sql id="selectCourseAndTermColumns">
     SELECT c.id AS "course_id", c.name AS "course_name", c.code AS "course_code",
            c.term_id AS "course_term_id", c.credit AS "course_credit", c.college_id AS "course_college_id",
-           t.id AS "term_id", t.name AS "term_name", t.start_date AS "term_start_date", t.end_date AS "term_end_date"
+           t.id AS "term_id", t.name AS "term_name", t.start_date AS "term_start_date", t.end_date AS "term_end_date",
+           co.name AS "college_name",co.id AS "college_id",co.remark AS "college_remark"
     FROM course c
-           JOIN term t ON c.term_id = t.id
+        JOIN term t ON c.term_id = t.id
+        JOIN college co ON c.college_id = co.id
   </sql>
 
   <select id="getAllCourseAndTerm" resultMap="CourseAndTermResultMap">
     <include refid="selectCourseAndTermColumns"/>
+    order by c.id asc
   </select>
 
   <select id="getCourseAndTermByCourseId" parameterType="java.lang.Integer" resultMap="CourseAndTermResultMap">

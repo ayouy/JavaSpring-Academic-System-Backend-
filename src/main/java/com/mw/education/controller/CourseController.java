@@ -23,6 +23,12 @@ public class CourseController {
         return AjaxResult.success().data(pageInfo);
     }
 
+    @GetMapping("/course-with-term")
+    public AjaxResult getAllCourseAndTerm(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                          @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<CourseAndTerm> pageInfo = courseService.getAllCourseAndTerm(pageSize, pageNum);
+        return AjaxResult.success().data(pageInfo);
+    }
     @GetMapping("/{id}")
     public AjaxResult selectById(@PathVariable int id) {
         Course course = courseService.selectById(id);

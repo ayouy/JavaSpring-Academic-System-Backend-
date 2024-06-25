@@ -8,4 +8,6 @@ import lombok.Data;
 public class ClassAndSpeciality {
     private ClassGroup classGroup;
     private Speciality speciality;
+    int totalStudents;
+    String collegeName;
 }

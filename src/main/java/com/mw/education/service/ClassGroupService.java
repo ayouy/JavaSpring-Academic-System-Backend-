@@ -12,7 +12,8 @@ import java.util.List;
 public interface ClassGroupService {
     PageInfo<ClassGroup> getAllClasses(int pageNum, int pageSize);
     ClassGroup getClassById(Integer id);
-    PageInfo<ClassAndSpeciality> getAllClassAndSpeciality();
+    PageInfo<ClassAndSpeciality> getAllClassAndSpeciality(int pageNum, int pageSize);
+
     List<ClassCourseAndCourse> getClassCoursesByClassId(Integer classId);
     PageInfo<Student> getClassStudents(Integer classId, int pageNum, int pageSize);
     int addClass(ClassGroup classGroup);

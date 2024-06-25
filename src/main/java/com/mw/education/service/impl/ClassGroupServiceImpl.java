@@ -32,7 +32,8 @@ public class ClassGroupServiceImpl implements ClassGroupService {
     }
 
     @Override
-    public PageInfo<ClassAndSpeciality> getAllClassAndSpeciality() {
+    public PageInfo<ClassAndSpeciality> getAllClassAndSpeciality(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<ClassAndSpeciality> list = classGroupMapper.getAllClassAndSpeciality();
         return new PageInfo<>(list);
     }
