@@ -2,16 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mw.education.dao.StudentMapper">
   <resultMap id="StudentAndClassResultMap" type="com.mw.education.domain.joined_entity.StudentAndClass">
-    <id column="student_id" property="student.id" />
-    <result column="student_name" property="student.name" />
-    <result column="student_password" property="student.password" />
-    <result column="student_code" property="student.code" />
-    <result column="student_class_id" property="student.classId" />
-    <result column="student_remark" property="student.remark" />
+    <id column="student_id" property="student.id"  jdbcType="INTEGER"/>
+    <result column="student_name" property="student.name" jdbcType="VARCHAR" />
+    <result column="student_password" property="student.password"  jdbcType="VARCHAR" />
+    <result column="student_code" property="student.code"  jdbcType="VARCHAR" />
+    <result column="student_class_id" property="student.classId" jdbcType="INTEGER" />
+    <result column="student_remark" property="student.remark" jdbcType="VARCHAR" />
 
-    <result column="class_name" property="classGroup.name" />
-    <result column="class_code" property="classGroup.code" />
-    <result column="speciality_id" property="classGroup.specialityId" />
+    <result column="class_name" property="classGroup.name"  jdbcType="VARCHAR" />
+    <result column="class_code" property="classGroup.code"  jdbcType="VARCHAR" />
+    <result column="speciality_id" property="classGroup.specialityId"  jdbcType="INTEGER" />
+
+    <result column="speciality_name" property="speciality.name"  jdbcType="VARCHAR" />
+    <result column="speciality_grade" property="speciality.grade" jdbcType="VARCHAR" />
+    <result column="speciality_code" property="speciality.code" jdbcType="VARCHAR" />
+    <result column="college_id" property="speciality.collegeId" jdbcType="INTEGER" />
+    <result column="college_name" property="collegeName" jdbcType="VARCHAR" />
   </resultMap>
 
   <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.Student">
@@ -125,9 +131,13 @@
 
   <select id="getAllStudentAndClass" resultMap="StudentAndClassResultMap">
     select s.id as student_id, s.name as student_name, s.password as student_password,  s.code as student_code ,
-           s.class_id as student_class_id, s.remark as student_remark, c.name as class_name, c.code as class_code, c.speciality_id
+           s.class_id as student_class_id, s.remark as student_remark, c.name as class_name, c.code as class_code, c.speciality_id,
+           sp.name as speciality_name, sp.grade as speciality_grade, sp.code as speciality_code, sp.college_id, co.name as college_name
     from student s
     inner join class c on s.class_id = c.id
+    inner join speciality sp on sp.id = c.speciality_id
+    inner join college co on co.id = sp.college_id
+    ORDER BY co.id,sp.id,c.id,s.id asc
   </select>
 
   <select id="getStudentAndClassByStudentId" parameterType="java.lang.Integer" resultMap="StudentAndClassResultMap">
@@ -147,4 +157,49 @@
     where c.id = #{id,jdbcType=INTEGER}
   </select>
 
+
+  <select id="getClassmates" parameterType="java.lang.String" resultMap="StudentAndClassResultMap">
+    select s.id as student_id, s.name as student_name, s.password as student_password, s.code as student_code,
+    s.class_id as student_class_id, s.remark as student_remark,
+    c.name as class_name, c.code as class_code, c.speciality_id,co.name as college_name,
+    sp.name as speciality_name, sp.grade as speciality_grade, sp.code as speciality_code, sp.college_id
+    from student s
+    inner join class c on s.class_id = c.id
+    inner join speciality sp on sp.id = c.speciality_id
+    inner join college co on co.id = sp.college_id
+    where s.class_id = (
+        SELECT class_id FROM student WHERE code = #{param1,jdbcType=VARCHAR}
+    )
+  </select>
+
+  <select id="getCollegeTeacherByStudentCode" parameterType="java.lang.String" resultMap="com.mw.education.dao.TeacherMapper.TeacheAndCollegeResultMap">
+    select t.id as teacher_id, t.name as teacher_name, t.password as teacher_password, t.code as teacher_code,
+    t.college_id as teacher_college_id,co.name as college_name
+    from teacher t
+    inner join college co on co.id=t.college_id
+    inner join student s on s.code = #{param1,jdbcType=VARCHAR}
+    inner join class c on c.id = s.class_id
+    inner join speciality sp on sp.id = c.speciality_id
+    where t.college_id = sp.college_id
+  </select>
+
+  <select id="getClassCourseByStudentCode" parameterType="java.lang.Integer" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
+    <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
+    WHERE cc.class_id = (
+    SELECT class_id FROM student s WHERE s.id = #{id,jdbcType=INTEGER}
+    )
+  </select>
+
+  <select id="getClassIdByStudentCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select class_id
+    from student
+    where code = #{param1,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getScoreByStudentCode" parameterType="java.lang.String" resultMap="com.mw.education.dao.StudentCourseScoreMapper.StudentCourseScoreAndCourseResultMap">
+          <include refid="com.mw.education.dao.StudentCourseScoreMapper.selectAllJoinedCourseColumns" />
+          WHERE scs.student_id =(
+            select id FROM student WHERE code = #{param1,jdbcType=VARCHAR}
+          )
+  </select>
 </mapper>

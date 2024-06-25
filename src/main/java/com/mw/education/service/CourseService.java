@@ -13,6 +13,9 @@ public interface CourseService {
     CourseAndTerm getCourseAndTermByCourseId(int id);
     List<ClassCourseAndCourse> getAllClassCourseAndCourse();
     ClassCourseAndCourse getClassCourseAndCourseByCourseId(int id);
+
+    int addCourseAndTeacher(String code, Course course);
+
     boolean deleteById(int id);
     boolean edit(Course course);
     boolean add(Course course);

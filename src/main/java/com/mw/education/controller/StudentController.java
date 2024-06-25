@@ -2,7 +2,11 @@ package com.mw.education.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.mw.education.domain.compose.Student;
+import com.mw.education.domain.compose.Teacher;
+import com.mw.education.domain.joined_entity.ClassCourseAndCourse;
 import com.mw.education.domain.joined_entity.StudentAndClass;
+import com.mw.education.domain.joined_entity.StudentCourseScoreAndCourse;
+import com.mw.education.domain.joined_entity.TeacherAndCollege;
 import com.mw.education.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -60,4 +64,49 @@ public class StudentController {
             return AjaxResult.error().msg("添加失败");
         }
     }
+
+    @GetMapping("/{code}/classes")
+    public AjaxResult selectClassmates(@PathVariable String code,
+                                       @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                       @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<StudentAndClass> pageInfo = studentService.selectClassmates(code, pageSize, pageNum);
+        if (pageInfo.getTotal() == 0) {
+            return AjaxResult.error().msg("没有找到对应的学生信息");
+        }
+        return AjaxResult.success().data(pageInfo);
+    }
+
+    @GetMapping("/{code}/college-teachers")
+    public AjaxResult selectCollegeTeachers(@PathVariable String code,
+                                            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                            @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<TeacherAndCollege> pageInfo = studentService.selectCollegeTeachers(code, pageSize, pageNum);
+        if (pageInfo.getTotal() == 0) {
+            return AjaxResult.error().msg("没有找到该学院老师信息");
+        }
+        return AjaxResult.success().data(pageInfo);
+    }
+
+    @GetMapping("/{code}/class-courses")
+    public AjaxResult selectClassCourses(@PathVariable String code,
+                                        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                        @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<ClassCourseAndCourse> pageInfo = studentService.selectClassCourses(code, pageSize, pageNum);
+        if (pageInfo.getTotal() == 0) {
+            return AjaxResult.error().msg("没有找到该班级课程信息");
+        }
+        return AjaxResult.success().data(pageInfo);
+    }
+
+    @GetMapping("/{code}/student-scores")
+    public AjaxResult selectStudentScores(@PathVariable String code,
+                                        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                        @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<StudentCourseScoreAndCourse> pageInfo = studentService.selectScoreByStudentCode(code, pageSize, pageNum);
+        if (pageInfo.getTotal() == 0) {
+            return AjaxResult.error().msg("没有找到该学生成绩信息");
+        }
+        return AjaxResult.success().data(pageInfo);
+    }
+
 }

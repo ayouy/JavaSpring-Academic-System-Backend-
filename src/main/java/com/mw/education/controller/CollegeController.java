@@ -104,4 +104,20 @@ public class CollegeController {
         }
     }
 
+    @GetMapping("/{code}/{type}/college-id")
+    public AjaxResult getCollegeIdByCode(@PathVariable String code, @PathVariable String type) {
+        int collegeId = -1;
+        if ("teacher".equals(type)) {
+            collegeId = collegeService.getCollegeIdByTeacherCode(code);
+        } else if ("dean".equals(type)) {
+            collegeId = collegeService.getCollegeIdByDeanCode(code);
+        } else if ("student".equals(type)) {
+            collegeId = collegeService.getCollegeIdStudentCode(code);
+        }
+        if(collegeId==-1){
+            return AjaxResult.error().msg("未找到对应的学院");
+        }
+        return AjaxResult.success().data(collegeId);
+    }
+
 }

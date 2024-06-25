@@ -2,6 +2,7 @@ package com.mw.education.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.mw.education.domain.compose.ClassGroup;
+import com.mw.education.domain.compose.Student;
 import com.mw.education.domain.joined_entity.ClassAndSpeciality;
 import com.mw.education.domain.joined_entity.ClassCourseAndCourse;
 import com.mw.education.service.ClassGroupService;
@@ -83,4 +84,17 @@ public class ClassController {
             return AjaxResult.error().msg("删除班级失败");
         }
     }
+
+    @GetMapping("{classId}/students")
+    public AjaxResult getClassStudents(@PathVariable Integer classId,
+                                        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                        @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<Student> list = classGroupService.getClassStudents(classId, pageNum, pageSize);
+        if (!list.getList().isEmpty()) {
+            return AjaxResult.success().data(list);
+        } else {
+            return AjaxResult.error().msg("未找到对应班级的学生信息");
+        }
+    }
 }
+

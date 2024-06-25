@@ -2,6 +2,8 @@ package com.mw.education.controller;
 
 //import com.mw.education.dao.DeanMapper;
 //import com.mw.education.dao.StudentMapper;
+import com.mw.education.dao.DeanMapper;
+import com.mw.education.dao.StudentMapper;
 import com.mw.education.dao.TeacherMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,10 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     private TeacherMapper teacherMapper;
+    @Autowired
+    private StudentMapper studentMapper;
+    @Autowired
+    private DeanMapper deanMapper;
 
 
     public static class LoginData {
@@ -48,15 +54,16 @@ public class LoginController {
 
     @RequestMapping(path = "/login", method= { RequestMethod.GET, RequestMethod.POST })
     AjaxResult login(@RequestBody LoginData loginData, HttpSession session) {
+
         switch (loginData.getType()){
             case "dean":
-                int deanCount = teacherMapper.countByCodeAndPassword(loginData.getCode(), loginData.getPassword());
+                int deanCount = deanMapper.countByCodeAndPassword(loginData.getCode(), loginData.getPassword());
                 if(deanCount == 0) {
                     return AjaxResult.error().code(401).msg("check code and password failed");
                 }
                 else {
-                    session.setAttribute("user-code", "code");
-                    session.setAttribute("user-type", "dean");
+                    session.setAttribute("user-code", loginData.getCode());
+                    session.setAttribute("user-type", loginData.getType());
                     return AjaxResult.success().msg("login success");
                 }
             case "teacher":
@@ -65,65 +72,23 @@ public class LoginController {
                     return AjaxResult.error().code(401).msg("check code and password failed");
                 }
                 else {
-                    session.setAttribute("user-code", "code");
-                    session.setAttribute("user-type", "teacher");
+                    session.setAttribute("user-code", loginData.getCode());
+                    session.setAttribute("user-type", loginData.getType());
                     return AjaxResult.success().msg("login success");
                 }
             case "student":
-                int studentCount = teacherMapper.countByCodeAndPassword(loginData.getCode(), loginData.getPassword());
+                int studentCount = studentMapper.countByCodeAndPassword(loginData.getCode(), loginData.getPassword());
                 if(studentCount == 0) {
                     return AjaxResult.error().code(401).msg("check code and password failed");
                     }
                 else {
-                    session.setAttribute("user-code", "code");
-                    session.setAttribute("user-type","student");
+                    session.setAttribute("user-code", loginData.getCode());
+                    session.setAttribute("user-type",loginData.getType());
                     return AjaxResult.success().msg("login success");
                 }
             default:
                 return AjaxResult.error().code(401).msg("check type failed");
         }
-
-
-        // 教务、教师、学生根据type来区分，依工号/学号来登录
-        /*
-        if(loginData.getType().equals("dean")) {
-            int n = deanMapper.countByCodeAndPassword(loginData.getCode(), loginData.getPassword());
-            if(n == 0) {
-                return AjaxResult.error().code(401).msg("check code and password failed");
-            }
-            else {
-                // Tomcat的内置session(简单应用场合)记录数据
-                session.setAttribute("user-code", "code");
-                session.setAttribute("user-type", "dean");
-                return AjaxResult.success().msg("login success");
-            }
-        }
-        else if(loginData.getType().equals("teacher")) {
-            int n = teacherMapper.countByCodeAndPassword(loginData.getCode(), loginData.getPassword());
-            if(n == 0) {
-                return AjaxResult.error().code(401).msg("check code and password failed");
-            }
-            else {
-                session.setAttribute("user-code", "code");
-                session.setAttribute("user-type", "teacher");
-                return AjaxResult.success().msg("login success");
-            }
-        }
-        else if(loginData.getType().equals("student")) {
-            int n = studentMapper.countByCodeAndPassword(loginData.getCode(), loginData.getPassword());
-            if(n == 0) {
-                return AjaxResult.error().code(401).msg("check code and password failed");
-            }
-            else {
-                session.setAttribute("user-code", "code");
-                session.setAttribute("user-type", "student");
-                return AjaxResult.success().msg("login success");
-            }
-        }
-        else {
-            return AjaxResult.error().code(400).msg("check login type");
-        }
-         */
     }
 
     @GetMapping("/logout")

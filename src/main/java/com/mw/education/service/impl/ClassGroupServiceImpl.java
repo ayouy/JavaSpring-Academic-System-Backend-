@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mw.education.dao.ClassGroupMapper;
 import com.mw.education.domain.compose.ClassGroup;
+import com.mw.education.domain.compose.Student;
 import com.mw.education.domain.joined_entity.ClassAndSpeciality;
 import com.mw.education.domain.joined_entity.ClassCourseAndCourse;
 import com.mw.education.service.ClassGroupService;
@@ -54,5 +55,12 @@ public class ClassGroupServiceImpl implements ClassGroupService {
     @Override
     public boolean deleteClassById(Integer id) {
         return classGroupMapper.deleteByPrimaryKey(id) > 0;
+    }
+
+    @Override
+    public PageInfo<Student> getClassStudents(Integer classId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Student> list = classGroupMapper.getClassStudents(classId);
+        return new PageInfo<>(list);
     }
 }

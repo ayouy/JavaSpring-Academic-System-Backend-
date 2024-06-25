@@ -88,4 +88,15 @@ public class CourseController {
             return AjaxResult.error().msg("添加失败");
         }
     }
+
+    @PostMapping("/addCourseAndTeacher/{code}")
+    public AjaxResult addCourseAndTeacher(@PathVariable String code, @RequestBody Course course) {
+        int affectRow = courseService.addCourseAndTeacher(code, course);
+        if (affectRow > 0) {
+            return AjaxResult.success().msg("教师添加课程成功");
+        } else {
+            return AjaxResult.error().msg("教师添加课程失败");
+        }
+    }
+
 }

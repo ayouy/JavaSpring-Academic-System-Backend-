@@ -7,7 +7,11 @@ import com.mw.education.service.DeanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/deans")
@@ -36,7 +40,14 @@ public class DeanController {
     @GetMapping("/collegeAndDean")
     public AjaxResult getAllCollegeAndDean() {
         List<CollegeAndDean> list = deanService.getAllCollegeAndDean();
-        return AjaxResult.success().data(list);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (CollegeAndDean item : list) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("college", item.getCollege());
+            map.put("dean", item.getDean());
+            result.add(map);
+        }
+        return AjaxResult.success().data(result);
     }
 
     @GetMapping("/collegeAndDean/{id}")

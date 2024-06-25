@@ -110,6 +110,23 @@
     WHERE s.college_id = #{id,jdbcType=INTEGER}
   </select>
 
+<select id="getCollegeIdByTeacherCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select c.id as college_id
+    from college c
+    inner join teacher t on t.code = #{code,jdbcType=VARCHAR} and t.college_id = c.id
+</select>
 
+  <select id="getCollegeIdByDeanCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select c.id as college_id
+    from college c
+    inner join dean d on d.code = #{code,jdbcType=VARCHAR} and d.college_id = c.id
+  </select>
 
+  <select id="getCollegeIdStudentCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select sp.college_id as college_id
+    from speciality sp
+    inner join student s on s.code = #{code,jdbcType=VARCHAR}
+    inner join class as cl on cl.id=s.class_id
+    where sp.id = cl.speciality_id
+  </select>
 </mapper>

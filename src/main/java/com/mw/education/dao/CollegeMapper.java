@@ -25,4 +25,8 @@ public interface CollegeMapper {
     List<SpecialityAndCollege> getAllSpecialityAndCollege();
 
     List<SpecialityAndCollege> getSpecialityAndCollegeById(Integer id);
+
+    int getCollegeIdStudentCode(String code);
+    int getCollegeIdByTeacherCode(String code);
+    int getCollegeIdByDeanCode(String code);
 }

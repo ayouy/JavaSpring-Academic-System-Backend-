@@ -22,6 +22,12 @@
       <result column="credit" property="credit" jdbcType="DECIMAL" />
       <result column="college_id" property="collegeId" jdbcType="INTEGER" />
     </association>
+    <association property="term" columnPrefix="term_" javaType="com.mw.education.domain.compose.Term">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="start_date" property="startDate" jdbcType="DATE" />
+      <result column="end_date" property="endDate" jdbcType="DATE" />
+    </association>
   </resultMap>
   <sql id="Base_Column_List">
     id, student_id, course_id, score
@@ -92,9 +98,11 @@
 
   <sql id="selectAllJoinedCourseColumns">
         select 'false' as QUERYID, scs.id AS sutdent_classcourse_score_id, scs.student_id AS sutdent_classcourse_score_student_id, scs.course_id AS sutdent_classcourse_score_course_id, scs.score AS sutdent_classcourse_score_score,
-        c.id AS course_id, c.name AS course_name, c.code AS course_code, c.term_id AS course_term_id, c.credit AS course_credit, c.college_id AS course_college_id
+        c.id AS course_id, c.name AS course_name, c.code AS course_code, c.term_id AS course_term_id, c.credit AS course_credit, c.college_id AS course_college_id,
+        t.id AS term_id, t.name AS term_name, t.start_date AS term_start_date, t.end_date AS term_end_date
         from student_course_score scs
         inner join course c on scs.course_id = c.id
+        inner join term t on c.term_id = t.id
   </sql>
   <select id="getAllStudentCourseScoreAndCourse" resultMap="StudentCourseScoreAndCourseResultMap">
     <include refid="selectAllJoinedCourseColumns" />
@@ -114,4 +122,5 @@
     <include refid="selectAllJoinedCourseColumns" />
     where scs.course_id = #{param1,jdbcType=INTEGER}
   </select>
+
 </mapper>

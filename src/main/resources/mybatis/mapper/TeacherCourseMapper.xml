@@ -23,6 +23,12 @@
       <result column="course_term_id" property="termId"/>
       <result column="course_credit" property="credit"/>
     </association>
+    <association property="term" columnPrefix="term_" javaType="com.mw.education.domain.compose.Term">
+      <id column="term_id" property="id"/>
+      <result column="term_name" property="name"/>
+      <result column="term_start_date" property="startDate"/>
+      <result column="term_end_date" property="endDate"/>
+    </association>
   </resultMap>
 
   <resultMap id="BaseResultMap" type="com.mw.education.domain.compose.TeacherCourse">
@@ -31,9 +37,9 @@
     <result column="course_id" jdbcType="INTEGER" property="courseId" />
   </resultMap>
 
-  <select id="getPrimaryKeyByTeacherIdAndCourseId" resultType="java.lang.Integer">
+  <select id="getPrimaryKeyByTeacherCodeAndCourseId" resultType="java.lang.Integer">
     select id from teacher_course
-    where teacher_id = #{param1,jdbcType=INTEGER} and course_id = #{param2,jdbcType=INTEGER}
+    where teacher_id = ( SELECT t.id FROM teacher t where t.code =#{param1,jdbcType=VARCHAR}) and course_id = #{param2,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from teacher_course
@@ -45,7 +51,7 @@
     values (#{id,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective"  keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.TeacherCourse">
+  <insert id="insertSelective"  keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.TeacherCourse" useGeneratedKeys="true">
     insert into teacher_course
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="teacherId!= null">
@@ -116,16 +122,19 @@
     WHERE tc.id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="getTeacherCourseAndCourseByTeacherId" parameterType="java.lang.Integer" resultMap="TeacherCourseAndCourseResultMap">
+  <select id="getTeacherCourseAndCourseByTeacherCode" parameterType="java.lang.String" resultMap="TeacherCourseAndCourseResultMap">
     SELECT t.id AS "teacher_teacher_id", t.name AS "teacher_teacher_name", t.password AS "teacher_teacher_password",
     t.code AS "teacher_teacher_code", t.college_id AS "teacher_teacher_college_id", t.remark AS "teacher_teacher_remark",
     c.id AS "college_college_id", c.name AS "college_college_name", c.remark AS "college_college_remark",
     co.id AS "course_course_id", co.name AS "course_course_name", co.code AS "course_course_code",
-    co.term_id AS "course_course_term_id", co.credit AS "course_course_credit"
+    co.term_id AS "course_course_term_id", co.credit AS "course_course_credit",
+    tm.id AS "term_term_id", tm.name AS "term_term_name", tm.start_date AS "term_term_start_date", tm.end_date AS "term_term_end_date"
     FROM teacher_course tc
-      JOIN teacher t ON t.id = tc.teacher_id
+      JOIN teacher t ON t.id = tc.teacher_id AND t.code = #{code,jdbcType=VARCHAR}
       JOIN college c ON t.college_id = c.id
       JOIN course co ON co.id = tc.course_id
-    WHERE tc.teacher_id = #{id,jdbcType=INTEGER}
+    JOIN term  tm ON tm.id = co.term_id
+    WHERE tc.teacher_id = t.id
+    order by co.id ASC
   </select>
 </mapper>

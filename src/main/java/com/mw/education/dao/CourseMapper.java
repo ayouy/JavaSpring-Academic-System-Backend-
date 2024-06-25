@@ -11,6 +11,11 @@ public interface CourseMapper {
 
     int insert(Course record);
 
+    int deleteTeacherCourseByCourseId(int courseId);
+
+    int deleteStudentCourseScoreByCourseId(int courseId);
+
+    int deleteClassCourseByCourseId(int courseId);
     int insertSelective(Course record);
 
     Course selectByPrimaryKey(Integer id);

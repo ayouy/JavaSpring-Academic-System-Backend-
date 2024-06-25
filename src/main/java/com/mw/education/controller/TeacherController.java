@@ -3,6 +3,8 @@ package com.mw.education.controller;
 import com.github.pagehelper.PageInfo;
 import com.mw.education.domain.compose.Teacher;
 import com.mw.education.domain.compose.TeacherCourse;
+import com.mw.education.domain.joined_entity.ClassStudents;
+import com.mw.education.domain.joined_entity.SpecialityAndClassStudents;
 import com.mw.education.domain.joined_entity.TeacherAndCollege;
 import com.mw.education.domain.joined_entity.TeacherCourseAndCourse;
 import com.mw.education.service.TeacherService;
@@ -25,9 +27,9 @@ public class TeacherController {
         return AjaxResult.success().data(pageInfo);
     }
 
-    @GetMapping("/{id}")
-    public AjaxResult selectById(@PathVariable int id) {
-        TeacherAndCollege item = teacherService.selectById(id);
+    @GetMapping("/{code}")
+    public AjaxResult selectById(@PathVariable String code) {
+        TeacherAndCollege item = teacherService.selectByTeacherCode(code);
         if (item != null) {
             return AjaxResult.success().data(item);
         } else {
@@ -65,9 +67,9 @@ public class TeacherController {
         return AjaxResult.success().data(course);
     }
 
-    @GetMapping("/{id}/courses")
-    public AjaxResult getTeacherCoursesByTeacherId(@PathVariable Integer id) {
-        List<TeacherCourseAndCourse> courses = teacherService.getTeacherCourseAndCourseByTeacherId(id);
+    @GetMapping("/{code}/courses")
+    public AjaxResult getTeacherCoursesByTeacherId(@PathVariable String code) {
+        List<TeacherCourseAndCourse> courses = teacherService.getTeacherCourseAndCourseByTeacherCode(code);
         if (courses == null || courses.size() == 0) {
             return AjaxResult.error().msg("没有找到对应的教师课程信息");
         }
@@ -93,13 +95,28 @@ public class TeacherController {
         return AjaxResult.error().msg("课程更新失败");
     }
 
-    @DeleteMapping("/{id}&{courseId}/courses")
-    public AjaxResult deleteTeacherCourseById(@PathVariable Integer id ,@PathVariable Integer courseId) {
-        int result = teacherService.deleteTeacherCourseByTeacherIdAndCourseId(id, courseId);
+    @DeleteMapping("/{code}&{courseId}/courses")
+    public AjaxResult deleteTeacherCourseById(@PathVariable String code ,@PathVariable Integer courseId) {
+        int result = teacherService.deleteTeacherCourseByTeacherCodeAndCourseId(code, courseId);
         if (result > 0) {
             return AjaxResult.success().msg("课程删除成功");
         }
         return AjaxResult.error().msg("课程删除失败");
+    }
 
+    @GetMapping("/{code}/college-classes")
+    public AjaxResult selectCollegeClasses(@PathVariable String code,
+                                           @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                           @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<SpecialityAndClassStudents> pageInfo = teacherService.getAllTeacherSpecialityAndClassStudents(code, pageSize, pageNum);
+        return AjaxResult.success().data(pageInfo);
+    }
+
+    @GetMapping("/{code}/college-teachers")
+    public AjaxResult selectCollegeTeachers(@PathVariable String code,
+                                            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                            @RequestParam(name = "pageNum", defaultValue = "1") int pageNum) {
+        PageInfo<TeacherAndCollege> pageInfo = teacherService.getAllTeacherAndCollegeByTeacherCode(code, pageSize, pageNum);
+        return AjaxResult.success().data(pageInfo);
     }
 }

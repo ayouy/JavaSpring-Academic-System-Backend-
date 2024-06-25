@@ -34,11 +34,28 @@
     <include refid="Base_Column_List" />
     from course
     where id = #{id,jdbcType=INTEGER}
+    order by id desc
   </select>
+
+  <delete id="deleteTeacherCourseByCourseId" parameterType="int">
+    delete from teacher_course where course_id = #{courseId,jdbcType=INTEGER}
+  </delete>
+
+
+  <delete id="deleteStudentCourseScoreByCourseId" parameterType="int">
+    delete from student_course_score where course_id = #{courseId,jdbcType=INTEGER}
+  </delete>
+
+
+  <delete id="deleteClassCourseByCourseId" parameterType="int">
+    delete from class_course where course_id = #{courseId,jdbcType=INTEGER}
+  </delete>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from course
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.mw.education.domain.compose.Course" useGeneratedKeys="true">
     insert into course (`name`, code, term_id, 
       credit, college_id)
@@ -128,6 +145,7 @@
   <select id="getCourseAndTermByCourseId" parameterType="java.lang.Integer" resultMap="CourseAndTermResultMap">
     <include refid="selectCourseAndTermColumns"/>
     WHERE c.id = #{id,jdbcType=INTEGER}
+    order by c.id
   </select>
 <select id="getAllClassCourseAndCourse" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
     <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
@@ -136,6 +154,7 @@
   <select id="getClassCourseAndCourseByCourseId" parameterType="java.lang.Integer" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
     <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
     WHERE cc.course_id = #{id,jdbcType=INTEGER}
+    order by c.id desc
   </select>
 
   <select id="selectAll" resultMap="BaseResultMap">
@@ -144,4 +163,6 @@
     from course
     order by id desc
   </select>
+
+
 </mapper>

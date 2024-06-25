@@ -27,6 +27,11 @@
     <result column="speciality_id" jdbcType="INTEGER" property="specialityId" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
+
+  <resultMap id="ClassGroupAndStudentResultMap" type="com.mw.education.domain.joined_entity.ClassStudents">
+    <association property="classGroup" columnPrefix="class_" resultMap="BaseResultMap"/>
+    <collection property="students"  columnPrefix="student_"  resultMap="com.mw.education.dao.StudentMapper.BaseResultMap" />
+  </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from class
     where id = #{id,jdbcType=INTEGER}
@@ -132,6 +137,13 @@
   <select id="getClassCourseAndCourseByClassId" resultMap="com.mw.education.dao.ClassCourseMapper.ClassCourseAndCourseResultMap">
     <include refid="com.mw.education.dao.ClassCourseMapper.selectAllJoinedCourseColumns" />
     where cc.class_id = #{classId,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="getClassStudents" resultMap="com.mw.education.dao.StudentMapper.BaseResultMap">
+    select 'false' as QUERYID, s.id AS id, s.name AS name, s.password AS password, s.code AS code, s.class_id AS class_id, s.remark AS remark
+    from student s
+    where s.class_id = #{classId,jdbcType=INTEGER}
   </select>
 
 </mapper>

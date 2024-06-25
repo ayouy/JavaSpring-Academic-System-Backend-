@@ -23,20 +23,43 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
 
+  <resultMap id="TeacheAndCollegeResultMap" type="com.mw.education.domain.joined_entity.TeacherAndCollege">
+    <association property="teacher" columnPrefix="teacher_" javaType="com.mw.education.domain.compose.Teacher">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="password" jdbcType="VARCHAR" property="password" />
+      <result column="code" jdbcType="VARCHAR" property="code" />
+      <result column="college_id" jdbcType="INTEGER" property="collegeId" />
+    </association>
+    <association property="college" columnPrefix="college_" javaType="com.mw.education.domain.compose.College">
+      <result column="name" jdbcType="VARCHAR" property="name" />
+    </association>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, name, password, code, college_id, remark
   </sql>
-  <select id="getTeacherAndCollegeByTeacherId" parameterType="java.lang.Integer" resultMap="ExtendResultMap1">
+  <select id="getTeacherAndCollegeByTeacherCode" parameterType="java.lang.String" resultMap="ExtendResultMap1">
     select 'false' as QUERYID, teacher.id,teacher.name,teacher.password,teacher.code,teacher.remark,
            college_id as college_id,college.name as college_name,college.remark as college_remark
     from teacher left join college on teacher.college_id=college.id
-    where teacher.id = #{id,jdbcType=INTEGER}
+    where teacher.code = #{code,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getAllTeacherAndCollegeByTeacherCode" parameterType="java.lang.String" resultMap="ExtendResultMap1">
+    select 'false' as QUERYID, teacher.id,teacher.name,teacher.password,teacher.code,teacher.remark,
+           college_id as college_id,college.name as college_name,college.remark as college_remark
+    from college join teacher on college.id=teacher.college_id
+    where teacher.college_id=(
+      select college_id from teacher where code = #{code,jdbcType=VARCHAR}
+      )
   </select>
 
   <select id ="getAllTeacherAndCollege" resultMap="ExtendResultMap1">
     select 'false' as QUERYID, teacher.id,teacher.name,teacher.password,teacher.code,teacher.remark,
            college_id as college_id,college.name as college_name,college.remark as college_remark
     from teacher join college on teacher.college_id=college.id
+    order by teacher.id ASC
   </select>
 
   <select id="getTeacherAndCollegeByCollegeId" parameterType="java.lang.Integer" resultMap="ExtendResultMap1">
@@ -135,5 +158,59 @@
   <select id="selectAll" resultMap="TeacherResultMap">
     select id, name, password, code, college_id, remark
     from teacher
+  </select>
+  <resultMap id="SpecialityAndClassGroupAndStudentsResultMap" type="com.mw.education.domain.joined_entity.SpecialityAndClassStudents">
+    <association property="speciality"  columnPrefix="speciality_" javaType="com.mw.education.domain.compose.Speciality">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="grade" jdbcType="VARCHAR" property="grade" />
+      <result column="code" jdbcType="VARCHAR" property="code" />
+      <result column="college_id" jdbcType="INTEGER" property="collegeId" />
+      <result column="remark" jdbcType="VARCHAR" property="remark" />
+    </association>
+    <collection property="classStudentsList"  ofType="com.mw.education.domain.joined_entity.ClassStudents">
+      <association property="classGroup" columnPrefix="class_" javaType="com.mw.education.domain.compose.ClassGroup">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="speciality_id" jdbcType="INTEGER" property="specialityId" />
+      </association>
+      <collection property="students" columnPrefix="student_" ofType="com.mw.education.domain.compose.Student">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="class_id" jdbcType="INTEGER" property="classId"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+      </collection>
+    </collection>
+  </resultMap>
+
+    <select id="getAllSpecialityAndClassGroupAndStudents"  parameterType="java.lang.String" resultMap="SpecialityAndClassGroupAndStudentsResultMap">
+      select
+      s.id as "speciality_id", s.name as "speciality_name", s.grade as "speciality_grade", s.code as "speciality_code",
+      s.college_id as "speciality_college_id", s.remark as "speciality_remark",
+      c.id as "class_id", c.name as "class_name", c.code as "class_code",
+      c.remark as "class_remark",c.speciality_id as "class_speciality_id",
+      stu.id as "student_id", stu.name as "student_name",
+      stu.code as "student_code", stu.remark as "student_remark",
+      stu.class_id as "student_class_id"
+      from speciality s
+      left join class c on c.speciality_id = s.id
+      left join student stu on stu.class_id = c.id
+      where s.college_id = (
+      SELECT college_id FROM teacher WHERE code = #{code,jdbcType=VARCHAR}
+      )
+      order by s.id, c.id, stu.id
+    </select>
+
+  <select id="getPrimaryKey" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select id from teacher where code = #{code,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAllByCollegeId" parameterType="java.lang.Integer" resultMap="TeacherResultMap">
+    select id, name, password, code, college_id, remark
+    from teacher
+    where college_id = #{collegeId,jdbcType=INTEGER}
   </select>
 </mapper>

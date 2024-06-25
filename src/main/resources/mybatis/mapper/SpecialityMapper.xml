@@ -132,4 +132,10 @@
     select id, name, grade, code, college_id, remark
     from speciality
   </select>
+
+  <select id="selectAllByCollegeId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, name, grade, code, college_id, remark
+    from speciality
+    where college_id = #{collegeId,jdbcType=INTEGER}
+  </select>
 </mapper>

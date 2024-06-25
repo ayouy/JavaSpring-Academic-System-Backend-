@@ -1,10 +1,11 @@
 package com.mw.education.domain.compose;
 
+import lombok.Data;
 import lombok.Getter;
 
 import java.io.Serializable;
 
-@Getter
+@Data
 public class TeacherCourse implements Serializable {
     private Integer id;
 
@@ -23,6 +24,13 @@ public class TeacherCourse implements Serializable {
     }
 
     public void setCourseId(Integer courseId) {
+        this.courseId = courseId;
+    }
+    public TeacherCourse(){
+
+    }
+    public TeacherCourse(Integer teacherId,Integer courseId){
+        this.teacherId = teacherId;
         this.courseId = courseId;
     }
 

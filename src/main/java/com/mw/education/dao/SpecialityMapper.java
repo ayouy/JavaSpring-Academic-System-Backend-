@@ -15,6 +15,7 @@ public interface SpecialityMapper {
     Speciality selectByPrimaryKey(Integer id);
 
     List<Speciality> selectAll();
+    List<Speciality> selectAllByCollegeId(int collegeId);
 
     int updateByPrimaryKey(Speciality row);
     int updateByPrimaryKeySelective(Speciality row);
